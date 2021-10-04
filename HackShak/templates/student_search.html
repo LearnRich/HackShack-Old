@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+{% block content %}
+	<div class="content-section">
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+				<div class="row">
+					<div class="col col-md-6">
+						{{ form.student_num.label(class="form-control-label") }}
+						{{ form.student_num(class="form-control form-control-lg")}}
+					</div>
+					<div class="col col-md-6">
+						{{ form.email.label(class="form-control-label") }}
+						{{ form.email(class="form-control form-control-lg")}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-md-6 mb-2">
+						{{ form.firstname.label(class="form-control-label") }}
+						{{ form.firstname(class="form-control form-control-lg")}}
+					</div>
+					<div class="col col-md-6">
+						{{ form.lastname.label(class="form-control-label") }}
+						{{ form.lastname(class="form-control form-control-lg")}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-md-6 mb-2">
+						{{ form.homeroom.label(class="form-control-label") }}
+						{{ form.homeroom(class="form-control form-control-lg")}}
+					</div>
+				</div>
+			</fieldset>
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}
+			</div>
+		</form>
+	</div>
+
+
+	{% if search_results %}
+	
+		{% if search_results.total > 0 %}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+				<th scope="col">Student Number</th>
+				<th scope="col">First</th>
+				<th scope="col">Last</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for student in search_results.items %}
+					<tr class="clickable-row" data-href="{{ url_for('students.update_profile', student_num=student.student_num) }}">
+						<td scope="row">{{ student.student_num }}</th>
+						<td>{{ student.user.firstname }}</td>
+						<td>{{ student.user.lastname }}</td>
+						<td>{{ student.commencemnt_bio }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% for page_num in search_results.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+			{% if page_num %}
+				{% if search_results.page == page_num %}
+					<a class="btn btn-info md-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+				{% else %}
+					<a class="btn btn-outline-info md-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+				{% endif %}
+			{% else %}
+				...
+			{% endif %}
+		{% endfor %}
+		{% else %}
+			<div class="content-section">
+				There were no students found with the search criteria.
+			</div>
+		{% endif %}
+	{% endif %}
+
+{% endblock %}

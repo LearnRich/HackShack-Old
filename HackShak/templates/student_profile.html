@@ -1,0 +1,118 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+	<form method="POST" action="">
+		{{ form.hidden_tag() }}
+		<fieldset class="form-group">
+			<legend class="border-bottom mb-4">{{ form.firstname.data }} {{ form.lastname.data }}</legend>
+			<div class="row">
+				<div class="col col-md-6">
+					{{ form.student_num.label(class="form-control-label") }}
+					{% if form.student_num.errors %}
+						{{ form.student_num(class="form-control form-control-lg is-invalid", readonly='readonly')}}
+						<div class="invalid-feedback">
+							{% for error in form.student_num.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.student_num(class="form-control form-control-lg",readonly='readonly')}}
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col col-md-6 mb-2">
+					{{ form.firstname.label(class="form-control-label") }}
+					{% if form.firstname.errors %}
+						{{ form.firstname(class="form-control form-control-lg is-invalid", readonly='readonly')}}
+						<div class="invalid-feedback">
+							{% for error in form.firstname.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.firstname(class="form-control form-control-lg", readonly='readonly')}}
+					{% endif %}
+				</div>
+				<div class="col col-md-6">
+						{{ form.lastname.label(class="form-control-label") }}
+						{% if form.lastname.errors %}
+							{{ form.lastname(class="form-control form-control-lg is-invalid", readonly='readonly')}}
+							<div class="invalid-feedback">
+								{% for error in form.lastname.errors %}
+									<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ form.lastname(class="form-control form-control-lg", readonly='readonly')}}
+						{% endif %}
+					</div>
+			</div>
+			<div class="form-group">
+				{{ form.phonetic_name.label(class="form-control-label") }}
+				{% if form.phonetic_name.errors %}
+					{{ form.phonetic_name(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.phonetic_name.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.phonetic_name(class="form-control form-control-lg")}}
+				{% endif %}
+			</div>
+			<div class="form-group">
+					<div class="form-check mt-3">
+						{{ form.is_crossing(class="form-check-input") }}
+						{{ form.is_crossing.label(class="form-check-label") }}
+					</div>
+			</div>
+			<div class="form-group">
+				{{ form.gown_size.label(class="form-control-label") }}
+				{% if form.gown_size.errors %}
+					{{ form.gown_size(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.gown_size.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.gown_size(class="form-control form-control-lg")}}
+				{% endif %}
+			</div>
+			<div class="form-group">
+				{{ form.commencement_statement.label(class="form-control-label") }}
+				{% if form.commencement_statement.errors %}
+					{{ form.commencement_statement(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.commencement_statement.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.commencement_statement(class="form-control form-control-lg")}}
+				{% endif %}
+			</div>
+			<div class="form-group">
+				{{ form.yearbook_statement.label(class="form-control-label") }}
+				{% if form.yearbook_statement.errors %}
+					{{ form.yearbook_statement(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.yearbook_statement.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.yearbook_statement(class="form-control form-control-lg")}}
+				{% endif %}
+			</div>
+		</fieldset>
+		<div class="form-group">
+			{{ form.submit(class="btn btn-outline-info") }}
+		</div>
+	</form>
+</div>
+
+{% endblock %}
