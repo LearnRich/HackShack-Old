@@ -109,6 +109,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+hackshak_venv/
+hackshack_venv.bak/
+.hackshack_venv
 
 # Spyder project settings
 .spyderproject
@@ -127,3 +130,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Config Files
+config.py
+pip_installs.txt
