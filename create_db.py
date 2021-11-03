@@ -1,6 +1,6 @@
 from HackShak import create_app, db, bcrypt, __STUDENT_ROLE, __ADMIN_ROLE, __TEACHER_ROLE
 
-from HackShak.Users.models import User, Role, RoleAssignment
+from HackShak.models import User, Role, RoleAssignment, Announcement
 
 app = create_app()
 app.app_context().push()
@@ -49,6 +49,7 @@ db.session.commit()
 
 
 RoleAssignment.create(admin_user_role.name, su_user.id)
+RoleAssignment.create(teacher_user_role.name, su_user.id)
 
 RoleAssignment.create(teacher_user_role.name, t_user.id)
 

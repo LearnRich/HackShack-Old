@@ -4,7 +4,7 @@ from wtforms.fields.core import RadioField, SelectField
 from wtforms.fields.html5 import DateField  # to be used with Date Pickers at a later time.
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
-from HackShak.Users.models import User
+from HackShak.models import User
 from flask_login import current_user
 
 

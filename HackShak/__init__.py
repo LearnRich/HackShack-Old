@@ -6,6 +6,7 @@ from HackShak.config import HackShakConfig
 
 
 db = SQLAlchemy()
+
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
@@ -14,7 +15,6 @@ login_manager.login_message_category = 'info'
 __ADMIN_ROLE = 'admin'
 __TEACHER_ROLE = 'teacher'
 __STUDENT_ROLE = 'student'
-
 
 def create_app(config_class=HackShakConfig):
 	app = Flask(__name__)

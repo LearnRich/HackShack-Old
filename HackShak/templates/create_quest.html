@@ -18,17 +18,102 @@
 					{{ form.title(class="form-control form-control-lg") }}
 				{% endif %}
 			</div>
+			
 			<div class="form-group">
-				{{ form.content.label(class="form-control-label") }}
-				{% if form.content.errors %}
-					{{ form.content(class="form-control form-control-lg is-invalid") }}
+				{{ form.description.label(class="form-control-label") }}
+				{% if form.description.errors %}
+					{{ form.description(class="form-control form-control-lg is-invalid") }}
 					<div class="invalid-feedback">
-						{% for error in form.content.errors %}
+						{% for error in form.description.errors %}
 						<span>{{ error }}</span>
 						{% endfor %}
 					</div>
 				{% else %}
-					{{ form.content(class="form-control form-control-lg") }}
+					{{ form.description(class="form-control form-control-lg", id="description") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.xp.label(class="form-control-label") }}
+				{% if form.xp.errors %}
+					{{ form.xp(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.xp.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.xp(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.campaign.label(class="form-control-label") }}
+				{% if form.campaign.errors %}
+					{{ form.campaign(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.campaign.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.campaign(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.expiry.label(class="form-control-label") }}
+				{% if form.expiry.errors %}
+					{{ form.expiry(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.expiry.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.expiry(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.repeatable.label(class="form-control-label") }}
+				{% if form.repeatable.errors %}
+					{{ form.repeatable(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.repeatable.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.repeatable(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.details.label(class="form-control-label") }}
+				{% if form.details.errors %}
+					{{ form.details(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.details.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.details(class="form-control form-control-lg",id="details") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.submission_instructions.label(class="form-control-label") }}
+				{% if form.submission_instructions.errors %}
+					{{ form.submission_instructions(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.submission_instructions.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.submission_instructions(class="form-control form-control-lg",id="submission_instructions") }}
 				{% endif %}
 			</div>
 		</fieldset>
@@ -37,4 +122,11 @@
 		</div>
 	</form>
 </div>
+<script>
+	$(document).ready(function() {
+		$('#description').summernote();
+		$('#details').summernote();
+		$('#submission_instructions').summernote();
+	});
+</script>
 {% endblock %}

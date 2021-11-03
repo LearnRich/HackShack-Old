@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+{% for quest in quests.items %}
+		<article class="media content-section">
+			<image class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + quest.quest_author.image_file) }}"></image>
+			<div class="media-body">
+				<div class="article-metadata">
+					<a class="mr-2" href="{{ url_for('users.user_quests', username=quest.quest_author.username) }}">{{ quest.quest_author.username }}</a>
+					<small class="text-muted">on {{ quest.date_quested.strftime('%d-%M-%Y') }}</small>
+				</div>
+				<h2><a class="article-title" href="{{ url_for('quests.quest', quest_id=quest.id)}}">{{ quest.title }}</a></h2>
+				<p class="article-content">{{ quest.content }}</p>
+			</div>
+		</article>
+	{% endfor %}
+	{% for page_num in quests.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+		{% if page_num %}
+			{% if quests.page == page_num %}
+				<a class="btn btn-info md-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+			{% else %}
+				<a class="btn btn-outline-info md-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+			{% endif %}
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %}
+
+{% endblock %}

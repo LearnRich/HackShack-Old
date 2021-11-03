@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+	<article class="media content-section">
+		<div class="article-metadata">
+			<h2>{{ quest.title }}</h2>
+			<p class="article-content">{{ quest.description|safe }}</p>
+		</div>
+		<div class="article-metadata">
+			<h4>Quest Info</h2>
+			<div class="container">
+				<ul>
+					<li>XP: {{ quest.xp }}</li>
+					<li>Campaign: -</li>
+					<li>Expiry: {{ quest.expiry }}</li>
+					<li>Repeatable: {{ quest.repeatable }}</li>
+					<li>Requirements: None</li>
+				</ul>
+			</div>
+		</div>
+		<div class="article-metadata">
+			
+			
+			<h4>Quest Details</h3>
+			<p class="article-content">{{ quest.details|safe }}</p>
+		</div>
+		<div class="article-metadata">
+			<h4>Submission Instructions</h3>
+			<p class="article-content">{{ quest.submission|safe }}</p>
+			<p>Add a button to go and submit</p>
+			
+		</div>
+				
+				<div>
+					<a class="btn btn-primary btn-sm m-1" href="">Start</a>
+					<a class="btn btn-primary btn-sm m-1" href="">Continue</a>
+					<a class="btn btn-danger btn-sm m-1" href="">Drop Quest</a>
+				</div>
+				<div>
+					<a class="btn btn-primary btn-sm m-1" href="">Save Draft</a>
+					<a class="btn btn-secondary btn-sm m-1" href="">Submit Quest for Completion</a>
+					<a class="btn btn-danger btn-sm m-1" href="">Drop Quest</a>
+				</div>
+				<div>
+					{% if quest.quest_author == current_user %}
+					<a class="btn btn-secondary btn-sm m-1" href="{{ url_for('quests.update_quest', quest_id=quest.id) }}">Update Quest Details</a>
+					
+					<button type="button"class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
+						Delete Quest
+					</button>
+					{% endif %}
+				</div>
+
+
+		</div>
+	</article>
+
+	<!-- Modal -->
+
+	<div class="modal" id="deleteModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">>Confirm: You Want to Delete this Announcement?</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<form action="{{ url_for('announcements.delete_announcement', announcement_id=quest.id) }}" method="quest">
+						<input class="btn btn-danger mt-3" type="submit" value="Delete">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

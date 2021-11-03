@@ -1,26 +1,49 @@
 <header class="site-header">
 	<nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
 		<div class="container">
-			<a class="navbar-brand mr-4" href="{{ url_for('main.home') }}">SHSS Grad Writeup Hub</a>
+			<a class="navbar-brand mr-4" href="{{ url_for('main.home') }}">HS</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarToggle">
 				<div class="navbar-nav mr-auto">
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Manager Users
+					{% if current_user.is_authenticated %}
+					<div class="btn-group">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="bi bi-shield-shaded"></i>
 						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="{{ url_for('users.register') }}">Add New User</a>
-							<a class="dropdown-item" href="{{ url_for('students.student_search') }}">Search Students</a>
-						</div>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<li><a class="dropdown-item" href="">Available</a></li>
+							<li><a class="dropdown-item" href="">In Progress</a></li>
+							<li><a class="dropdown-item" href="">Completed</a></li>
+							<li><a class="dropdown-item" href="">Past Courses</a></li>
+						</ul>
 					</div>
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-patch-plus"></i></a>
+					<a class="nav-item nav-link" href="{{ url_for('quests.map') }}"><i class="bi bi-signpost-split"></i>
+					</a>
+					{% endif %}
+					<a class="nav-item nav-link" href="{{ url_for('announcements.get_all_announcements') }}"><i class="bi bi-newspaper"></i></a>
 				</div>
 				<!-- Navbar Right Side -->
 				<div class="navbar-nav">
 					{% if current_user.is_authenticated %}
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Profile</a>
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">XP: </a>
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a>
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-circle"></i></a>
+
+
+					<div class="btn-group">
+						<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+							<i class="bi bi-three-dots-vertical"></i>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li><a class="dropdown-item" href="#">Rank List</a></li>
+							<li><a class="dropdown-item" href="#">FAQ</a></li>
+							<li><a class="dropdown-item" href="https://www.surreyschools.ca/schools/sullivanheights/Pages/default.aspx" target="_blank">Sullivan Heights Site</a></li>
+							<li><a class="dropdown-item" href="https://www.surreyschools.ca/schools/sullivanheights/NewsEvents/Newsletters/Documents/Bell%20Schedule%2021-22%20with%20Flex%20an%20d%20CSL.pdf" target="_blank">SHS Bell Schedule</a></li>
+						</ul>
+					</div>
 					<a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
 					{% else %}
 						<a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>

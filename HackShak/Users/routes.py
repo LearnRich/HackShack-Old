@@ -1,14 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, flash, abort, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from HackShak import db, bcrypt, __STUDENT_ROLE
-from HackShak.Users.models import Role, RoleAssignment, User
+from HackShak.models import Role, RoleAssignment, User, Announcement
 from HackShak.Users.forms import LoginForm, UpdateProfileForm, RegistrationForm
 from HackShak.Users.utils import roles_required, save_picture, splitme
-from HackShak.Announcements.models import Announcement
 
 users = Blueprint('users', __name__)
 
-@users.route('/register', methods=['GET', 'POST'])
+@users.route('/register/', methods=['GET', 'POST'])
 def register():
 	if not current_user.is_authenticated:
 		return redirect(url_for('main.home'))
@@ -30,7 +29,7 @@ def register():
 		return redirect(url_for('users.login'))
 	return render_template('register.html', title='User Registration', form=form)
 
-@users.route('/login', methods=['GET', 'POST'])
+@users.route('/login/', methods=['GET', 'POST'])
 def login():
 	if current_user.is_authenticated:
 		print(current_user, "is authenticated")
@@ -50,12 +49,12 @@ def login():
 			flash('Login Unsuccessful, Please check username and password', 'danger')
 	return render_template('login.html', title='User Login', form=form)
 
-@users.route('/logot')
+@users.route('/logout/')
 def logout():
 	logout_user()
 	return redirect(url_for('main.home'))
 
-@users.route('/profile', methods=['GET', 'POST'])
+@users.route('/profile/', methods=['GET', 'POST'])
 @login_required
 def profile():
 	form = UpdateProfileForm()
@@ -75,7 +74,7 @@ def profile():
 	return render_template('profile.html', title='Account', 
 							image_file=image_file, form=form)
 
-@users.route('/user/<string:username>/remove')
+@users.route('/user/<string:username>/remove/')
 @login_required
 @roles_required(['admin', 'manager'])
 def remove_user(username):
@@ -87,12 +86,12 @@ def remove_user(username):
 	flash(f"The User {user.username} has been deleted.")
 	return redirect(url_for('main.home'))
 
-@users.route('/user/<string:username>')
+@users.route('/user/<string:username>/')
 def user_announcements(username):
 	page = request.args.get('page', 1, type=int)
 	user = User.query.filter_by(username=username).first_or_404()
-	announcements = Announcement.query.filter_by(author=user)\
+	announcements = Announcement.query.filter_by(announcement_author=user)\
 		.order_by(Announcement.date_posted.desc())\
 		.paginate(page=page, per_page=5)
-	return render_template('user_announcements.html', posts=announcements, user=user)
+	return render_template('user_announcements.html', announcements=announcements, user=user)
 

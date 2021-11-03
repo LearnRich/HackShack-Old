@@ -3,11 +3,11 @@
 
 {% for post in posts.items %}
 		<article class="media content-section">
-			<image class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"></image>
+			<image class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.announcement_author.image_file) }}"></image>
 			<div class="media-body">
 				<div class="article-metadata">
-					<a class="mr-2" href="{{ url_for('users.user_announcements', username=post.author.username) }}">{{ post.author.username }}</a>
-					<small class="text-muted">{{ post.date_posted.strftime('%d-%M-%Y') }}</small>
+					<a class="mr-2" href="{{ url_for('users.user_announcements', username=post.announcement_author.username) }}">{{ post.announcement_author.username }}</a>
+					<small class="text-muted">on {{ post.date_posted.strftime('%d-%M-%Y') }}</small>
 				</div>
 				<h2><a class="article-title" href="{{ url_for('announcements.announcement', announcement_id=post.id)}}">{{ post.title }}</a></h2>
 				<p class="article-content">{{ post.content }}</p>

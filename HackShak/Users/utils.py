@@ -5,7 +5,7 @@ import secrets
 from functools import wraps
 from flask_login import current_user
 from HackShak import login_manager
-from HackShak.Users.models import User
+from HackShak.models import User
 
 
 @login_manager.user_loader
@@ -47,4 +47,3 @@ def splitme(s, c):
         return s[1:]
     else: 
         return(s)
-
