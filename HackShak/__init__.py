@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from HackShak.config import HackShakConfig
+from HackShak.Main.utils import datetimeformat, datetimepassed
 
 
 db = SQLAlchemy()
@@ -35,6 +36,9 @@ def create_app(config_class=HackShakConfig):
 	app.register_blueprint(main)
 	app.register_blueprint(quests)
 	app.register_blueprint(errors)
+
+	app.jinja_env.filters['datetimeformat'] = datetimeformat
+	app.jinja_env.filters['datetimepassed'] = datetimepassed
 
 	return app
 

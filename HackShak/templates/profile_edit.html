@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="content-section"></div>
+<form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Editing {{ current_user.username }}'s Profile</legend>
+        <div class="mb-2 form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        <div class="form-group">
+            {{ form.preferred_firstname.label(class="form-control-label") }}
+            {% if form.preferred_firstname.errors %}
+                {{ form.preferred_firstname(class="form-control form-control-lg is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.preferred_firstname.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.preferred_firstname(class="form-control form-control-lg")}}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.preferred_name_internal }} {{ form.preferred_name_internal.label(class="form-control-label") }}
+            
+        </div>
+    
+        <div class="form-group">
+            {{ form.alias.label(class="form-control-label") }}
+            {% if form.alias.errors %}
+                {{ form.alias(class="form-control form-control-lg is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.alias.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.alias(class="form-control form-control-lg")}}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.grad_year.label(class="form-control-label") }}
+            {% if form.grad_year.errors %}
+                {{ form.grad_year(class="form-control form-control-lg is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.grad_year.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.grad_year(class="form-control form-control-lg")}}
+            {% endif %}
+        </div>
+
+
+        <div class="form-group">
+            {{ form.username.label(class="form-control-label") }}
+            {% if form.username.errors %}
+                {{ form.username(class="form-control form-control-lg is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.username(class="form-control form-control-lg")}}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.email.label(class="form-control-label") }}
+            {% if form.email.errors %}
+                {{ form.email(class="form-control form-control-lg is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.email(class="form-control form-control-lg")}}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.picture.label(class="form-control-label") }}</br>
+            {{ form.picture(class="form-control-file") }}
+            {% if form.picture.errors %}
+                {% for error in form.picture.errors %}
+                    <span class="text-danger">{{ error }}</span></br>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </fieldset>
+    <div class="mt-2 form-group">
+        {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+</form>
+
+</div>
+{% endblock %}

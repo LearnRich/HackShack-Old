@@ -1,18 +1,26 @@
 <header class="site-header">
-	<nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+	<nav class="navbar navbar-expand-md navbar-dark bg-teal fixed-top">
 		<div class="container">
-			<a class="navbar-brand mr-4" href="{{ url_for('main.home') }}">SHSS Grad Writeup Hub</a>
+			<a class="navbar-brand mr-4" href="{{ url_for('main.home') }}">HS</a>
+			
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarToggle">
 				<div class="navbar-nav mr-auto">
-					<a class="nav-item nav-link" href="{{ url_for('students.update_profile', student_num=current_user.username) }}">Grad Data Form</a>
+					{% if current_user.is_authenticated %}
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Courses</a>
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Campaigns</a>
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Quests</a>
+					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Announcements</a>
+					{% endif %}
+
 				</div>
 				<!-- Navbar Right Side -->
 				<div class="navbar-nav">
 					{% if current_user.is_authenticated %}
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Profile</a>
+					<a class="nav-item nav-link" href="{{ url_for('users.teacher_profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a>
+
 					<a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
 					{% else %}
 						<a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>

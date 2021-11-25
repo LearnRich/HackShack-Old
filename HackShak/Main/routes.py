@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, url_for
 from werkzeug.utils import redirect
-from HackShak.models import Announcement
+from HackShak.models import Announcement, Rank
 from flask_login import current_user, login_required
 from HackShak.Users.utils import roles_required
 
@@ -23,6 +23,7 @@ def about():
 	return render_template('about.html', title='FAQ')
 
 
-@main.route('/courses/ranks/')
+@main.route('/ranks/')
 def ranks():
-	return render_template('faq/ranks.html')
+	rank_list = Rank.query.order_by(Rank.xp.asc())
+	return render_template('faq/ranks.html', ranks=rank_list)

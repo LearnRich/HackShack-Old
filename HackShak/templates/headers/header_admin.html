@@ -9,10 +9,10 @@
 				<div class="navbar-nav mr-auto">
 					{% if current_user.is_authenticated %}
 					<div class="btn-group">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="bi bi-shield-shaded"></i>
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownQuestMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="bi bi-shield-shaded"> </i>
 						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<ul class="dropdown-menu" aria-labelledby="dropdownQuestMenuButton">
 							<li><a class="dropdown-item" href="">Available</a></li>
 							<li><a class="dropdown-item" href="">In Progress</a></li>
 							<li><a class="dropdown-item" href="">Completed</a></li>
@@ -34,10 +34,10 @@
 
 
 					<div class="btn-group">
-						<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+						<button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownGeneralMenuButton" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
 							<i class="bi bi-three-dots-vertical"></i>
 						</button>
-						<ul class="dropdown-menu dropdown-menu-end">
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownGeneralMenuButton">
 							<li><a class="dropdown-item" href="#">Rank List</a></li>
 							<li><a class="dropdown-item" href="#">FAQ</a></li>
 							<li><a class="dropdown-item" href="https://www.surreyschools.ca/schools/sullivanheights/Pages/default.aspx" target="_blank">Sullivan Heights Site</a></li>

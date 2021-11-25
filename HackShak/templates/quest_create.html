@@ -124,9 +124,15 @@
 </div>
 <script>
 	$(document).ready(function() {
-		$('#description').summernote();
-		$('#details').summernote();
-		$('#submission_instructions').summernote();
+		$('#description').summernote({
+			height: 300,
+		});
+		$('#details').summernote({
+			height: 300,
+		});
+		$('#submission_instructions').summernote({
+			height: 300,
+		});
 	});
 </script>
 {% endblock %}

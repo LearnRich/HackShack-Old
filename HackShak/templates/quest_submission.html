@@ -1,0 +1,156 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<article class="media content-section">
+		<div class="row">
+			<div class="col col-lg-8">
+				<div class="card">
+					<div class='card-header'>
+						<h6 class="card-title">
+							Quest Info
+						</h6>
+					</div>
+					<div class="card-body">
+						<h2>{{ submission.quest.title }}</h2>
+						<p class="card-text">
+							{{ submission.quest.description|safe }}
+						</p>
+					</div>			
+				</div>
+			</div>
+			<div class="col-sm">
+				<div class="card">
+					<div class='card-header'>
+						<h6 class="card-title">
+							Stats
+						</h6>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							<ul>
+								<li>XP: {{ submission.quest.xp }}</li>
+								<li>Campaign: -</li>
+								<li>Expiry: {{ submission.quest.expiry }}</li>
+								<li>Repeatable: {{ submission.quest.repeatable }}</li>
+								<li>Requirements: None</li>
+							</ul>
+						</p>
+					</div>			
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="card">
+				<div class='card-header'>
+					<h6 class="card-title">
+						Quest Details
+					</h6>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						{{ submission.quest.details|safe }}
+					</p>
+				</div>			
+			</div>
+		</div>
+		<div class="row">
+			<div class="card">
+				<div class='card-header'>
+					<h6 class="card-title">
+						Submission Instructions
+					</h6>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						{{ submission.quest.submission_instructions|safe }}
+					</p>
+				</div>			
+			</div>
+		</div>
+        <div class="row">
+			<div class="card">
+				<div class='card-header'>
+					<h6 class="card-title">
+						Past Submissions and Feedback
+					</h6>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						
+					</p>
+				</div>			
+			</div>
+		</div>
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+			<div class="row">
+				<div class="card">
+					<div class='card-header'>
+						<h6 class="card-title">
+							Submission Form
+						</h6>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							{% if form.submission_text.errors %}
+								{{ form.submission_text(class="is-invalid", id="submissionText") }}
+								<div class="invalid-feedback">
+									{% for error in form.submission_text.errors %}
+									<span>{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.submission_text(class="", id="submissionText") }}
+							{% endif %}						
+						</p>
+					</div>	
+					<div class="card-body">
+						<p class="card-text">
+							Attach files
+						</p>
+					</div>	
+					
+				</div>
+			</div>
+			<div>
+				<a class="btn btn-primary btn-sm m-1" href="">Save Draft</a>
+				<a class="btn btn-primary btn-sm m-1" href="">Submit Quest for Completion</a>
+				<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+					Drop Quest
+				</button>
+			</div>
+		</fieldset>
+
+	<!-- Modal -->
+<!-- Modal -->
+		<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Confirm: You Want to drop this quest</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<form action="" method="quest">
+					<input class="btn btn-danger mt-3" type="submit" value="Delete">
+				</form>
+				</div>
+			</div>
+			</div>
+		</div>
+
+
+
+
+
+	<script>
+		$(document).ready(function() {
+			$('#submissionText').summernote({
+				height: 300,
+
+			});
+		});
+	</script>
+{% endblock %}

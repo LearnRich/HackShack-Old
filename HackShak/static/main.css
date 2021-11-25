@@ -9,6 +9,12 @@ h1, h2, h3, h4, h5, h6 {
 .bg-steel {
 	background-color: #5f788a;
 }
+
+.bg-teal {
+	background-color: #009999;
+}
+
+
 .site-header .navbar-nav .nav-link {
 	color: #cbd5db;
 }
@@ -20,6 +26,7 @@ h1, h2, h3, h4, h5, h6 {
 .site-header .navbar-nav .nav-link.active {
 	font-weight: 500;
 }
+
 
 /* This was added to solve the justification of the menu bar */
 #navbarToggle {
