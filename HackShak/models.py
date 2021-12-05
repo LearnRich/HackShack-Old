@@ -1,7 +1,23 @@
-from HackShak import db, __STUDENT_ROLE, __ADMIN_ROLE, __TEACHER_ROLE
+from sqlalchemy.orm import backref
+from HackShak import db, ma, __STUDENT_ROLE, __ADMIN_ROLE, __TEACHER_ROLE
 from flask_login import UserMixin
 from datetime import datetime
 import enum
+
+course_enrollment = db.Table('course_enrollment',
+	db.Column('course_id', db.ForeignKey('course.id'), primary_key=True),
+	db.Column('student_id', db.ForeignKey('student.id'), primary_key=True)
+)
+
+taught_by = db.Table('taught_by',
+	db.Column('course_id', db.ForeignKey('course.id'), primary_key=True),
+	db.Column('teacher_id', db.ForeignKey('teacher.id'), primary_key=True)
+)
+
+quest_requirements = db.Table("quest_requirements",
+	db.Column('base_quest_id', db.Integer, db.ForeignKey('quest.id')),
+	db.Column('required_quest_id', db.Integer, db.ForeignKey('quest.id'))
+)
 
 class Role(db.Model):
 	__tablename__ = 'role'
@@ -70,10 +86,6 @@ class User(db.Model, UserMixin):
 
 	avatar_file = db.Column(db.String(20), nullable=False, default='default.png')
 
-	announcements = db.relationship("Announcement", backref="announcement_author", lazy=True)
-	quests = db.relationship("Quest", backref='quest_author', lazy=True)
-
-
 	def get_roles(self):
 		return self.role_assignments
 
@@ -106,6 +118,10 @@ class Teacher(User):
 	id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 	representative_name = db.Column(db.String(45))
 
+	announcements = db.relationship("Announcement", backref="announcement_author", lazy=True)
+	courses =  db.relationship("Course", secondary=taught_by, back_populates='teachers')
+	quests = db.relationship("Quest", backref='quest_author', lazy=True)
+
 	def __repr__(self):
 		return f"Teacher('{self.username}', '{self.email}', '{self.avatar_file}')"	
 
@@ -123,9 +139,10 @@ class Student(User):
 	id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 	student_id = db.Column(db.String(15))
 	grad_year = db.Column(db.Integer(), nullable=False)
-	enrolled_in = db.relationship("ClassList", backref="classes", lazy=True)
-	
-	submissions = db.relationship("QuestSubmission", backref="quest_submission", lazy=True)
+
+	# relationships
+	courses =  db.relationship("Course", secondary=course_enrollment)
+	submissions = db.relationship("QuestSubmission", back_populates="student")
 
 	def get_xp(self):
 		total_xp = 0
@@ -145,17 +162,18 @@ class Student(User):
 		return rank
 
 	def get_current_enrolled_course(self):
-		for class_list_entry in self.enrolled_in:
-			course = Course.query.filter_by(id=class_list_entry.class_id).first()
-			if not course.archived:
+		for course in self.courses:
+			if course.archived == False:
 				return course
 		return None
 	
 	def get_course_history(self):
-		course_list = []
-		for class_list_entry in self.enrolled_in:
-			course_list.append(Course.query.filter_by(id=class_list_entry.class_id).first())
-		return course_list
+		return self.courses
+		course_history = []
+		for course in self.courses:
+			if course.archived:
+				course_history.append(course)
+		return course_history
 
 	def get_work_in_progress(self):
 		in_progress = QuestSubmission.query.filter_by(status=SubmissionStatus.IN_PROGRESS, student_id=self.id).all()
@@ -172,21 +190,17 @@ class Student(User):
 	def __repr__(self):
 		return f"Student('{self.username}', '{self.email}', '{self.avatar_file}')"	
 
+
+
 class Campaign(db.Model):
 	__tablename__ = 'campaign'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100), nullable=False)
 	description = db.Column(db.Text)
 
-	#quests =  db.relationship("Quest", backref='quest', lazy=True)
+	quests = db.relationship("Quest", back_populates='campaign')
 
-	def __repr__(self):
-		return f"Campaign('{self.title}', '{self.description}')"
 
-quest_requirements = db.Table("quest_requirements",
-	db.Column('base_quest_id', db.Integer, db.ForeignKey('quest.id')),
-	db.Column('required_quest_id', db.Integer, db.ForeignKey('quest.id'))
-)
 
 class Quest(db.Model):
 	__tablename__ = "quest"
@@ -195,12 +209,15 @@ class Quest(db.Model):
 	date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	description = db.Column(db.Text, nullable=True)
 	xp = db.Column(db.Integer, nullable=False)
-	campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=True)
 	expiry = db.Column(db.String(100), nullable=True)
 	repeatable = db.Column(db.String(100), nullable=True)
-	details = db.Column(db.Text)
-	submission_instructions = db.Column(db.Text)
+	details = db.Column(db.Text, nullable=True)
+	submission_instructions = db.Column(db.Text, nullable=True)
 
+	campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=True)
+	author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+	campaign = db.relationship('Campaign', back_populates='quests')
 	required_quests = db.relationship(
 		'Quest',
 		secondary=quest_requirements,
@@ -209,11 +226,16 @@ class Quest(db.Model):
 		backref = db.backref('required_quest', lazy='dynamic'), lazy='dynamic'
 		)
 
-	author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-	def __repr__(self):
-		return f"Quest('{self.title}', '{self.description}')"
+class SubmissionFeedback(db.Model):
+	__tablename__ = 'submission_feedback'
+	id = db.Column(db.Integer, primary_key=True)
+	submission_id = db.Column(db.Integer, db.ForeignKey('quest_submission.id'), nullable=False)
+	teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
+	feedback_text = db.Column(db.Text)
+	feedback_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+	teacher = db.relationship('Teacher')
 
 class QuestSubmission(db.Model):
 	__tablename__ = 'quest_submission'
@@ -221,16 +243,21 @@ class QuestSubmission(db.Model):
 	quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
 	student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
 	course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+
+	status = db.Column(db.Enum(SubmissionStatus, values_callable=lambda x: [str(member.value) for member in SubmissionStatus]), default=SubmissionStatus.IN_PROGRESS)
+	started_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
 	submission_text = db.Column(db.Text)
 	files = db.Column(db.Text)
-	status = db.Column(db.Enum(SubmissionStatus, values_callable=lambda x: [str(member.value) for member in SubmissionStatus]), default=SubmissionStatus.IN_PROGRESS)
-	in_progress = db.Column(db.Boolean, default=True, nullable=False)
-	started_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	#subbmitted_on = db.Column(db.DateTime)
+
 	xp_awarded = db.Column(db.Integer, default=0)
 
 	# future add the ability to add Proficincy Standards to Student Work
-	quest = db.relationship("Quest", backref=db.backref("quest_submission", uselist=False))
+	quest = db.relationship("Quest")
+	student = db.relationship("Student", back_populates='submissions')
+	course = db.relationship("Course")
+	feedback = db.relationship("SubmissionFeedback")
 
 	def get_quest_name(self):
 		quest = Quest.query.filter_by(id=self.quest_id).first()
@@ -240,51 +267,28 @@ class QuestSubmission(db.Model):
 		return "None"
 
 	def __repr__(self):
-		return f"QuestSubmission('{self.quesy.title}', '{self.status}')"
-
-class SubmissionFeedback(db.Model):
-	__tablename__ = 'student_work_feedback'
-	id = db.Column(db.Integer, primary_key=True)
-	submission_id = db.Column(db.Integer, db.ForeignKey('quest_submission.id'), nullable=False)
-	feedback_text = db.Column(db.Text)
-	feedback_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+		return f"QuestSubmission('{self.quest.title}', '{self.status}')"
 
 class Course(db.Model):
 	__tablename__ = "course"
 	id = db.Column(db.Integer, primary_key=True)
+	course_code = db.Column(db.String(100))
 	course_name = db.Column(db.String(100), nullable=False)
 	description = db.Column(db.Text)
 
 	base_quest_map = db.Column(db.String(50)) # change this to foriegn key with quest maps is created
-
-	grade_level = db.Column(db.Integer(), nullable=False)
+	grade = db.Column(db.String(2), nullable=False)
 	block = db.Column(db.String(1), nullable=False)
-	school_year = db.Column(db.String(10), nullable=False)
 	term = db.Column(db.String(10), nullable=False)
-	teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'))
-	studentlist = db.relationship("ClassList", backref="student_list", lazy=True)
-	
 	archived = db.Column(db.Boolean, default=False, nullable=False)
+	bc_curriculum = db.Column(db.String(100))
 
+	teachers = db.relationship('Teacher', secondary=taught_by, back_populates='courses')
+
+	students = db.relationship("Student", secondary=course_enrollment, back_populates="courses")
+	
 	def __repr__(self):
 		return f"Course('{self.course_name}', '{self.description}')"
-
-class ClassList(db.Model):
-	__tablename__ = 'class_list'
-	id = db.Column(db.Integer, primary_key=True)
-	class_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
-	student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
-
-	def __init__(self, class_id, student_id):
-		self.class_id = str(class_id)
-		self.student_id = student_id
-
-	@staticmethod
-	def create(class_id, student_id):
-		class_entry = ClassList(class_id, student_id)
-		db.session.add(class_entry)
-		db.session.commit()
-		return class_entry
 
 class Rank(db.Model):
 	__tablename__ = "rank"
@@ -313,6 +317,11 @@ class Badge(db.Model):
 	xp = db.Column(db.Integer(), nullable=False)
 	badge_image = db.Column(db.String(100), nullable=False)
 
+class MessageCategory(enum.Enum):
+	MESSAGE = 'Message'
+	IMPORTANT = 'Important'
+	WARNING = 'Warning'
+	PROBLEM = 'Problem'
 
 class Announcement(db.Model):
 	__tablename__ = 'announcement'
@@ -320,13 +329,25 @@ class Announcement(db.Model):
 	title = db.Column(db.String(100), nullable=False)
 	date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	content = db.Column(db.Text, nullable=False)
-
+	message_category = db.Column(db.Enum(MessageCategory, values_callable=lambda x: [str(member.value) for member in MessageCategory]), default=MessageCategory.MESSAGE)
 	author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 	def __repr__(self):
 		return f"Announcement('{self.title}', '{self.content}')"
 
+class CurricularCompetencies(db.Model):
+	__tablename__ = 'competencies'
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(200), nullable=False)
+	description = db.Column(db.Text, nullable=False)
+
 '''
+class Term(db.Model):
+	__tablename__ = 'term'
+	id = db.Column(db.Integer, primary_key=True)
+	start_date = db.Column(db.DateTime, nullable=False)
+	end_date = db.Column(db.DateTime, nullable=False)
+
 Create a notification to be assigned to all users on creation of an announcement
 When 
 class Notification(db.Model):
@@ -336,4 +357,11 @@ class Notification(db.Model):
 	content = db.Column(db.Text, nullable=False)
 	to_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	from_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+
+
+course_taught_by = db.Table('course_taught_by', 
+	db.Column('course_id', db.ForeignKey('course.id'), primary_key=True),
+	db.Column('teacher_id', db.ForeignKey('teacher.id'), primary_key=True),
+)
 '''
