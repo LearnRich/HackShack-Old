@@ -1,6 +1,6 @@
 from HackShak import create_app, db, bcrypt, __STUDENT_ROLE, __ADMIN_ROLE, __TEACHER_ROLE
 
-from HackShak.models import User, Student, Teacher, Admin, Role, RoleAssignment, Course, Rank, ClassList, Quest, QuestSubmission, SubmissionStatus
+from HackShak.models import User, Student, Teacher, Admin, Role, RoleAssignment, Course, Rank, Quest, QuestSubmission, SubmissionStatus, course_enrollment, taught_by
 
 app = create_app()
 app.app_context().push()
@@ -62,27 +62,31 @@ RoleAssignment.create(student_user_role.name, s_user.id)
 course = Course(
     course_name='Teachers Testing Stuff',
     description= 'This course is for teachers, so that they can have access to all the quests to view them as a student would',
-    grade_level = "13",
+    grade = "13",
 	block = "0",
-	school_year = "2021",
-	term = "AY",
-	teacher_id = t_user.id
+	term = "Sem 0 2021",
 )
+
 db.session.add(course)
+db.session.commit()
+
 
 coding_course = Course(
     course_name='Computer Programming 9',
-    description= 'Crade 9 computer programming',
-    grade_level = "9",
+    description= 'Grade 9 computer programming',
+    grade = '9',
 	block = "1",
-	school_year = "2021",
-	term = "S1",
-	teacher_id = t_user.id
+	term = "Sem 1 2021",
 )
 db.session.add(coding_course)
 db.session.commit()
+
+course.teachers.append(t_user)
+coding_course.teachers.append(t_user)
+
 # create the test class 
-ClassList.create(coding_course.id, s_user.id)
+coding_course.students.append(s_user)
+db.session.commit()
 
 q1 = Quest(
     title="First Quest", 
@@ -215,4 +219,7 @@ crafter_master = Rank(
 )
 db.session.add(crafter_master)
 db.session.commit()
+
+## Create and Add Competencies
+
 

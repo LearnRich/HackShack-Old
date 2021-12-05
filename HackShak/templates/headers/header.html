@@ -7,54 +7,53 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarToggle">
 				<div class="navbar-nav mr-auto">
-					{% if current_user.is_authenticated %}
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i class="bi bi-shield-shaded"> </i>
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">Available</a>
-							<a class="dropdown-item" href="#">In Progress</a>
-							<a class="dropdown-item" href="#">Completed</a>
-							<a class="dropdown-item" href="#">Past Courses</a>			
-						</div>
-					</div>
-					
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-patch-plus"></i></a>
-					<a class="nav-item nav-link" href="{{ url_for('quests.map') }}"><i class="bi bi-signpost-split"></i>
-					</a>
+					<ul class="nav nav-pills">
+						{% if current_user.is_authenticated %}
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="{{ url_for('teachers.teacher_courses_current') }}" role="button" aria-expanded="false"><i class="bi bi-shield-shaded"> </i></a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#">Available</a></li>
+								<li><a class="dropdown-item" href="#">In Progress</a></li>
+								<li><a class="dropdown-item" href="#">Completed</a></li>
+								<li><a class="dropdown-item" href="#">Past Courses</a></li>
+							</ul>
+						</li>						
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-patch-plus"></i></a></li>
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('quests.quests_maps') }}"><i class="bi bi-signpost-split"></i></a></li>
 					{% endif %}
-					<a class="nav-item nav-link" href="{{ url_for('announcements.get_all_announcements') }}"><i class="bi bi-newspaper"></i></a>
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('announcements.announcements_all') }}"><i class="bi bi-newspaper"></i></a></li>
+					</ul>
 				</div>
 				<!-- Navbar Right Side -->
 				<div class="navbar-nav">
-					{% if current_user.is_authenticated %}
+					<ul class="nav nav-pills">
+						{% if current_user.is_authenticated %}
 
-					{% if current_user.has_role('student') %}
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">XP: {{ current_user.get_role_obj().get_xp() }} </a>
-					{% endif %}
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a>
-					{% if current_user.has_role('student') %}
-					<a class="nav-item nav-link" href="{{ url_for('main.ranks') }}">{{ current_user.get_role_obj().get_current_rank().symbol_html|safe }}</i></a>
-					{% endif %}
+						{% if current_user.has_role('student') %}
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.profile') }}">XP: {{ current_user.get_role_obj().get_xp() }} </a></li>
+						{% endif %}
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a></li>
+						{% if current_user.has_role('student') %}
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('main.ranks') }}">{{ current_user.get_role_obj().get_current_rank().symbol_html|safe }}</i></a></li>
+						{% endif %}
 
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="{{ url_for('teachers.teacher_courses_current') }}" role="button" aria-expanded="false">
+								<i class="bi bi-three-dots-vertical"></i>
+							</a>
+							<ul class="dropdown-menu dropdown-menu-end">
+								<li><a class="dropdown-item" href="#">Rank List</a></li>
+								<li><a class="dropdown-item" href="#">FAQ</a></li>
+								<li><a class="dropdown-item" href="https://www.surreyschools.ca/schools/sullivanheights/Pages/default.aspx" target="_blank">Sullivan Heights Site</a></li>
+								<li><a class="dropdown-item" href="https://www.surreyschools.ca/schools/sullivanheights/NewsEvents/Newsletters/Documents/Bell%20Schedule%2021-22%20with%20Flex%20an%20d%20CSL.pdf" target="_blank">SHS Bell Schedule</a></li>
+							</ul>
+						</li>
 
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i class="bi bi-three-dots-vertical"></i>
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">Rank List</a>
-							<a class="dropdown-item" href="#">FAQ</a>
-							<a class="dropdown-item" href="https://www.surreyschools.ca/schools/sullivanheights/Pages/default.aspx" target="_blank">Sullivan Heights Site</a>
-							<a class="dropdown-item" href="https://www.surreyschools.ca/schools/sullivanheights/NewsEvents/Newsletters/Documents/Bell%20Schedule%2021-22%20with%20Flex%20an%20d%20CSL.pdf" target="_blank">SHS Bell Schedule</a>
-						</div>
-					</div>
-
-					<a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
-					{% else %}
-						<a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
-					{% endif %}
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a></li>
+						{% else %}
+							<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a></li>
+						{% endif %}
+					</ul>
 				</div>
 			</div>
 		</div>

@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link disabled" href="">{{ course.course_name }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('courses.course_details', course_id=course.id) }}">Course Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('courses.course_quests_maps', course_id=course.id) }}">Content Management</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="{{ url_for('courses.course_studentlist', course_id=course.id) }}">Student List</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('courses.course_quest_submissions', course_id=course.id) }}">Review Submitted Quests</a>
+    </li>
+  </ul>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Avatar</td>
+        <th scope="col">Preferred Name</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Alias</th>
+        <th scope="col">Grad</th>
+        <th scope="col">Block</th>
+        <th scope="col">Mark</th>
+        <th scope="col">Course XP</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in course.students %}
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td>{{ student.firstname }}</td>
+        <td>{{ student.lastname }}</td>
+        <td>{{ student.alias }}</td>
+        <td>{{ student.grad_year }}</td>
+        <td></td>
+        <td></td>
+        <td>{{ student.get_xp() }}</td>
+      
+      </tr>
+
+      {% endfor %}
+      <tbody>
+  </table>
+</div>
+
+{% endblock %}

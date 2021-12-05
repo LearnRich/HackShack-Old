@@ -32,7 +32,7 @@
 						<p class="card-text">
 							<ul>
 								<li>XP: {{ quest.xp }}</li>
-								<li>Campaign: -</li>
+								<li>Campaign: {{ quest.campaign.name }}</li>
 								<li>Expiry: {{ quest.expiry }}</li>
 								<li>Repeatable: {{ quest.repeatable }}</li>
 								<li>Requirements: None</li>
@@ -75,7 +75,7 @@
 		</div>
 		{% if current_user.has_role('teacher') or current_user.has_role('admin') %}
 		<div class="row">
-			<a class="btn btn-secondary btn-sm m-1" href="{{ url_for('quests.update_quest', quest_id=quest.id) }}">Update Quest Details</a>
+			<a class="btn btn-secondary btn-sm m-1" href="{{ url_for('quests.quest_update', quest_id=quest.id) }}">Update Quest Details</a>
 			
 			<button type="button"class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
 				Delete Quest
@@ -89,13 +89,13 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title">>Confirm: You Want to Delete this Announcement?</h5>
+					<h5 class="modal-title">Delete Quest: {{ quest.title }}? </h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<form action="" method="quest">
-						<input class="btn btn-danger mt-3" type="submit" value="Delete">
+					<form action="{{ url_for('quests.quest_delete', quest_id=quest.id) }}" method="POST">
+						<input class="btn btn-danger" type="submit" value="Delete">
 					</form>
 				</div>
 			</div>

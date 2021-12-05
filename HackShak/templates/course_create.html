@@ -1,0 +1,110 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="content-section">
+	<form method="POST" action="">
+		{{ form.hidden_tag() }}
+		<fieldset class="form-group">
+			<legend class="border-bottom mb-4">{{ legend }}</legend>
+			<div class="form-group">
+				{{ form.course_code.label(class="form-control-label") }}
+				{% if form.course_code.errors %}
+					{{ form.course_code(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.course_code.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.course_code(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+			<div class="form-group">
+				{{ form.course_name.label(class="form-control-label") }}
+				{% if form.course_name.errors %}
+					{{ form.course_name(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.course_name.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.course_name(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>			
+			<div class="form-group">
+				{{ form.description.label(class="form-control-label") }}
+				{% if form.description.errors %}
+					{{ form.description(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.description.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.description(class="form-control form-control-lg", id="description") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.grade.label(class="form-control-label") }}
+				{% if form.grade.errors %}
+					{{ form.grade(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.grade.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.grade(class="form-control form-control-lg", id="description") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.term.label(class="form-control-label") }}
+				{% if form.term.errors %}
+					{{ form.term(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.term.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.term(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.block.label(class="form-control-label") }}
+				{% if form.block.errors %}
+					{{ form.block(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.block.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.block(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.bc_curriculum.label(class="form-control-label") }}
+				{% if form.bc_curriculum.errors %}
+					{{ form.bc_curriculum(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in form.bc_curriculum.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.bc_curriculum(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+		</fieldset>
+		<div class="form-group">
+			{{ form.submit(class="btn btn-outline-info") }}
+		</div>
+	</form>
+</div>
+
+{% endblock %}

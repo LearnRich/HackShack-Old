@@ -22,14 +22,14 @@
 			<div class="form-group">
 				{{ form.description.label(class="form-control-label") }}
 				{% if form.description.errors %}
-					{{ form.description(class="form-control form-control-lg is-invalid") }}
+					{{ form.description(class="", id="description") }}
 					<div class="invalid-feedback">
 						{% for error in form.description.errors %}
 						<span>{{ error }}</span>
 						{% endfor %}
 					</div>
 				{% else %}
-					{{ form.description(class="form-control form-control-lg", id="description") }}
+					{{ form.description(class="", id="description") }}
 				{% endif %}
 			</div>
 
@@ -49,15 +49,19 @@
 
 			<div class="form-group">
 				{{ form.campaign.label(class="form-control-label") }}
+				<div>
+					<input class="form-control form-control-lg mb-1" id="campaign_search" placeholder="Start Typing Here to Seach Campaigns">
+				</div>
+
 				{% if form.campaign.errors %}
-					{{ form.campaign(class="form-control form-control-lg is-invalid") }}
+					{{ form.campaign(class="form-control form-control-lg is-invalid", id="campaign_select") }}
 					<div class="invalid-feedback">
 						{% for error in form.campaign.errors %}
 						<span>{{ error }}</span>
 						{% endfor %}
 					</div>
 				{% else %}
-					{{ form.campaign(class="form-control form-control-lg") }}
+					{{ form.campaign(class="form-control form-control-lg", id="campaign_select") }}
 				{% endif %}
 			</div>
 
@@ -92,28 +96,28 @@
 			<div class="form-group">
 				{{ form.details.label(class="form-control-label") }}
 				{% if form.details.errors %}
-					{{ form.details(class="form-control form-control-lg is-invalid") }}
+					{{ form.details(class="",id="details") }}
 					<div class="invalid-feedback">
 						{% for error in form.details.errors %}
 						<span>{{ error }}</span>
 						{% endfor %}
 					</div>
 				{% else %}
-					{{ form.details(class="form-control form-control-lg",id="details") }}
+					{{ form.details(class="",id="details") }}
 				{% endif %}
 			</div>
 
 			<div class="form-group">
 				{{ form.submission_instructions.label(class="form-control-label") }}
 				{% if form.submission_instructions.errors %}
-					{{ form.submission_instructions(class="form-control form-control-lg is-invalid") }}
+					{{ form.submission_instructions(class="",id="submission_instructions") }}
 					<div class="invalid-feedback">
 						{% for error in form.submission_instructions.errors %}
 						<span>{{ error }}</span>
 						{% endfor %}
 					</div>
 				{% else %}
-					{{ form.submission_instructions(class="form-control form-control-lg",id="submission_instructions") }}
+					{{ form.submission_instructions(class="",id="submission_instructions") }}
 				{% endif %}
 			</div>
 		</fieldset>
@@ -125,7 +129,7 @@
 <script>
 	$(document).ready(function() {
 		$('#description').summernote({
-			height: 300,
+			height: 100,
 		});
 		$('#details').summernote({
 			height: 300,
@@ -133,6 +137,42 @@
 		$('#submission_instructions').summernote({
 			height: 300,
 		});
-	});
+
+		const load_data = function(query) {
+			$.ajax({
+				url: "{{url_for('campaigns.campaigns_search', limit=10)}}",
+				method: "POST",
+				data: {query:query},
+				success: function(data) {
+					$('#campaign_select').empty();
+					console.log(data.length)
+					if(data.length) {
+						$.each(data, function(i, item) {
+							let option = $("<option></option>")
+							option.attr("value", item.id)
+							option.text(item.name)
+							$('#campaign_select').append(option)
+						});
+					}
+					else {
+						let option = $("<option disabled></option>")
+						option.text("No Search Results")
+						$('#campaign_select').append(option)
+					}
+				}
+			});
+		}
+
+		$("#campaign_search").keyup(function() {
+			let search_str = $(this).val();
+			if(search_str != '') {
+				load_data(search_str);
+			}
+			else {
+				$('#campaign_select').html("")
+			}
+		});
+	});	
 </script>
+
 {% endblock %}

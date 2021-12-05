@@ -1,14 +1,26 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{% for quest in quests.items %}
-		<article class="media content-section">
-			CL
-			<div class="media-body">
-				<h4><a class="article-title" href="{{ url_for('quests.quest', quest_id=quest.id)}}">{{ quest.title }}</a></h4>
-			</div>
-		</article>
-	{% endfor %}
+
+<div class="content-section">
+
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Campaign Id</td>
+            <th scope="col">Campaign Name</th>
+        </tr>
+        </thead>
+        <tbody>
+		{% for quest in quests.items %}
+        <tr  onClick="window.location.assign('{{ url_for('quests.quest', quest_id=quest.id)}}')">
+            <td scope="col">{{ quest.id}}</a></td>
+            <td scope="col">{{ quest.title }}</td>
+        </tr>
+        {% endfor %}
+        <tbody>
+    </table>
 	{% for page_num in quests.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
 		{% if page_num %}
 			{% if quests.page == page_num %}
@@ -20,5 +32,7 @@
 			...
 		{% endif %}
 	{% endfor %}
+</div>
+
 
 {% endblock %}

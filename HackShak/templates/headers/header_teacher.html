@@ -8,18 +8,48 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarToggle">
 				<div class="navbar-nav mr-auto">
-					{% if current_user.is_authenticated %}
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Courses</a>
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Campaigns</a>
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Quests</a>
-					<a class="nav-item nav-link" href="{{ url_for('users.profile') }}">Announcements</a>
-					{% endif %}
+					<ul class="nav nav-pills">
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Courses</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="{{ url_for('teachers.teacher_courses_current') }}">Current Courses</a></li>
+								<li><a class="dropdown-item" href="{{ url_for('teachers.teacher_courses_completed') }}">Completed Courses</a></li>	
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="{{ url_for('courses.course_create') }}">Create Course</a></li>
+							</ul>
+						</li>						
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button" aria-expanded="false">Campaigns</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="{{ url_for('campaigns.campaigns_all') }}">All Campaigns</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="{{ url_for('campaigns.campaign_create') }}">Create Campaign</a></li>
+							</ul>
+						</li>	
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button" aria-expanded="false">Quests</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="{{ url_for('quests.quests_all') }}">All Quests</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="{{ url_for('quests.quest_create') }}">Create Quest</a></li>
+							</ul>
+						</li>	
+
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button" aria-expanded="false">Announcements</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="{{ url_for('announcements.announcements_all') }}">All Announcements</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="{{ url_for('announcements.announcement_create') }}">Create Announcement</a></li>
+							</ul>
+						</li>		
+					</ul>
 
 				</div>
 				<!-- Navbar Right Side -->
 				<div class="navbar-nav">
 					{% if current_user.is_authenticated %}
-					<a class="nav-item nav-link" href="{{ url_for('users.teacher_profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a>
+					<a class="nav-item nav-link" href="{{ url_for('teachers.teacher_profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a>
 
 					<a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
 					{% else %}

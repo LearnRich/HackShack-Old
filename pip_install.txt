@@ -7,3 +7,5 @@ pillow
 flask_sqlalchemy
 mysql
 pymysql
+flask-marshmallow
+marshmallow-sqlalchemy

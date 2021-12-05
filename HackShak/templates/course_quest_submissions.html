@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link disabled" href="">{{ course.course_name }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('courses.course_details', course_id=course.id) }}">Course Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('courses.course_quests_maps', course_id=course.id) }}">Content Management</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('courses.course_studentlist', course_id=course.id) }}">Student List</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="{{ url_for('courses.course_quest_submissions', course_id=course.id) }}">Review Submitted Quests</a>
+    </li>
+  </ul>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Student Name</th>
+        <th scope="col">Quest Title</th>
+        <th scope="col">Submission Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for submission in submissions %}
+
+      <tr onClick="window.location.assign('{{ url_for('quests.quest_submission_review', submission_id=submission.id)}}')">
+        <td>{{ submission.student.firstname }} {{ submission.student.lastname }}</td>
+        <td>{{ submission.quest.title }}</td>
+        <td>{{ submission.submitted_date }}</td>
+      
+      </tr>
+
+      {% endfor %}
+      <tbody>
+  </table>
+</div>
+
+{% endblock %}

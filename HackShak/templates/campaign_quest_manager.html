@@ -1,0 +1,130 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link disabled" href="">{{ campaign.name }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('campaigns.campaign', campaign_id=campaign.id) }}">Campaign Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page"  href="{{ url_for('campaigns.campaign_quests', campaign_id=campaign.id) }}">Quest Manager</a>
+    </li>
+  </ul>
+
+  <div class="row mt-2">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex flex-row">
+            <div class="d-flex flex-fill justify-content-start">{{ campaign.name }} Quests</div>
+            <div class="d-flex">
+              <a href="{{ url_for('campaigns.campaign_update', campaign_id=campaign.id) }}"><i class="bi bi-gear"></i></a>
+            </div>
+          </div>
+        
+
+        </div>
+        <div class="card-body">
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Quest Id</td>
+                <th scope="col">Quest Name</th>
+                <th scope="col">Quest XP</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quest in campaign.quests %}
+            <tr onClick="window.location.assign('{{ url_for('quests.quest', quest_id=quest.id)}}')">
+                <td scope="col col-2">{{ quest.id}}</a></td>
+                <td scope="col">{{ quest.title }}</td>
+                <td scope="col col-2">{{ quest.xp }}</td>
+                <td scope="col"><a href="{{ url_for('campaigns.campaign_quest_remove', campaign_id=campaign.id, quest_id=quest.id) }}" class="btn btn-outline-danger btn-sm">Remove</a></td>
+            </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <input type="text" name="quest_search_text" id="quest_search_text" class="form-control" placeholder="Search quests by name">
+      <form method="POST" action="{{ url_for('campaigns.campaign_quest_add', campaign_id=campaign.id) }}">
+        <div id="result"></div>
+
+        <table  id="results_table" class="table table-stripped">
+          <thead>
+              <tr>
+                  <th></th>
+                  <th scope="col">Quest Id</td>
+                  <th scope="col">Quest Name</th>
+                  <th scope="col">Quest XP</th>
+              </tr>
+              </thead>
+              <tbody id="results_table_body">
+              <tbody>
+      </table>
+
+
+
+        <input class="mt-1" type="submit" value="Add Quest(s)">
+      </form>
+    </div>
+  </div>
+
+
+
+</div>
+
+<script>
+  $(document).ready(function() {
+
+    const load_data = function(query) {
+      $.ajax({
+        url: "{{url_for('quests.quests_search', limit=10)}}",
+        method: "POST",
+        data: {query:query},
+        success: function(data) {
+          $('#results_table_body').empty();
+          $.each(data.search_results, function(i, item) {
+                    let tr=$('<tr></tr>');
+                    let td = $('<td></td>')
+                      .appendTo(tr)
+                    let input = $('<input/>')
+                      .attr('type', 'checkbox')
+                      .attr('id', "quest"+item.id)
+                      .attr('name', item.id)
+                      .appendTo(td)
+                    tr.append($('<td scope="col col-2"></td>').text(item.id));
+                    tr.append($('<td scope="col"></td>').text(item.title));
+                    tr.append($('<td scope="col col-2"></td>').text(item.xp));                          
+                    $('#results_table_body').append(tr);
+          });
+        }
+      });
+    }
+
+    $("#quest_search_text").keyup(function() {
+      var search = $(this).val();
+      if(search != '') {
+        load_data(search);
+      }
+      else {
+        $('#result').html("")
+      }
+    });
+
+
+    
+
+
+  });
+
+
+</script>
+
+
+{% endblock %}

@@ -98,3 +98,12 @@ a.article-title:hover {
 .media-body {
 	display: inline-block;
 }
+
+.table-hover tr:hover {
+	background:#B0B3B8;
+	cursor: pointer;
+}
+
+.bold {
+	font-weight: bold;
+}

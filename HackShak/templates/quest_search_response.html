@@ -1,0 +1,23 @@
+<table class="table table-stripped">
+    <thead>
+        <tr>
+            <th></th>
+            <th scope="col">Quest Id</td>
+            <th scope="col">Quest Name</th>
+            <th scope="col">Quest XP</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quest in quests %}
+        <tr>
+            <td><input type="checkbox" id="quest{{ quest.id }}" name="{{ quest.id }}"></td>
+            <td scope="col col-2">{{ quest.id }}</a></td>
+            <td scope="col">{{ quest.title }}</td>
+            <td scope="col col-2">{{ quest.xp }}</td>
+        </tr>
+        {% endfor %}
+        <tbody>
+</table>
+<script>
+
+</script>

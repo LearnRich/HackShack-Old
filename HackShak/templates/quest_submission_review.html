@@ -2,7 +2,7 @@
 {% block content %}
 
 <article class="media content-section">
-		<div class="row">
+		<div class="row mb-2">
 			<div class="col col-lg-8">
 				<div class="card">
 					<div class='card-header'>
@@ -39,7 +39,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mb-2">
+			<div class="col">
 			<div class="card">
 				<div class='card-header'>
 					<h6 class="card-title">
@@ -53,7 +54,9 @@
 				</div>			
 			</div>
 		</div>
+		</div>
 		<div class="row">
+			<div class="col">
 			<div class="card">
 				<div class='card-header'>
 					<h6 class="card-title">
@@ -67,69 +70,119 @@
 				</div>			
 			</div>
 		</div>
+		</div>
         <div class="row">
+			<div class="col">
 			<div class="card">
 				<div class='card-header'>
 					<h6 class="card-title">
-						Past Submissions and Feedback
+						Past Feedback
+					</h6>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+					<ul class="list-group">
+						{% for feedback in submission.feedback %}
+						<li class="list-group-item d-flex justify-content-between align-items-start">
+							<div class="ms-2 me-auto">
+								<div>{{ feedback.feedback_text|safe }}</div>
+							</div>
+							<span class="badge bg-danger">
+								<a data-toggle="modal" class="btn btn-sm"
+									id="{{ feedback.id }}" value="Delete"
+									data-target="#deleteModal"
+									onclick="aTestFunction(this)">Remove</a>            
+								</a>
+							</span>
+						</li>
+						{% endfor %}
+					</ul>
+					</div>
+				</div>			
+			</div>
+		</div>
+		</div>
+		<div class="row">
+			<div class="col">
+			<div class="card">
+				<div class='card-header'>
+					<h6 class="card-title">
+						Submissions
 					</h6>
 				</div>
 				<div class="card-body">
 					<p class="card-text">
-						<ul class="list-group">
-							{% for feedback in submission.feedback %}
-							<li class="list-group-item d-flex justify-content-between align-items-start">
-								<div class="ms-2 me-auto">
-									<div>{{ feedback.feedback_text|safe }}</div>
-								</div>
-								<span class="badge bg-light text-dark">{{ feedback.teacher.firstname }} {{ feedback.teacher.lastname }}<br/>{{feedback.feedback_date|datetimeformat}}</span>
-							</li>
-							{% endfor %}
-						</ul>						
+						{{ submission.submission_text|safe }}
 					</p>
 				</div>			
 			</div>
+		</div>
+		</div>
+		<div class="row">
+			<div class="col">
+			<div class="card">
+				<div class='card-header'>
+					<h6 class="card-title">
+						Attached Files
+					</h6>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						
+					</p>
+				</div>			
+			</div>
+		</div>
 		</div>
 		<form method="POST" action="">
 			{{ form.hidden_tag() }}
 			<fieldset class="form-group">
 			<div class="row">
+				<div class="col">
 				<div class="card">
 					<div class='card-header'>
 						<h6 class="card-title">
-							Submission Form
+							Submission Feedback Form
 						</h6>
 					</div>
 					<div class="card-body">
 						<p class="card-text">
-							{% if form.submission_text.errors %}
-								{{ form.submission_text(class="is-invalid", id="submissionText") }}
+							{% if form.feedback_text.errors %}
+								{{ form.feedback_text(class="is-invalid", id="feedbackText") }}
 								<div class="invalid-feedback">
-									{% for error in form.submission_text.errors %}
+									{% for error in form.feedback_text.errors %}
 									<span>{{ error }}</span>
 									{% endfor %}
 								</div>
 							{% else %}
-								{{ form.submission_text(class="", id="submissionText") }}
+								{{ form.feedback_text(class="", id="feedbackText") }}
 							{% endif %}						
 						</p>
 					</div>	
 					<div class="card-body">
 						<p class="card-text">
-							Attach files
+							{{ form.awarded_xp.label(class="form-control-label") }}
+							{% if form.awarded_xp.errors %}
+								{{ form.awarded_xp(class="form-control form-control-lg is-invalid") }}
+								<div class="invalid-feedback">
+									{% for error in form.awarded_xp.errors %}
+									<span>{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.awarded_xp(class="form-control form-control-lg") }}
+							{% endif %}			
 						</p>
 					</div>	
 					
 				</div>
 			</div>
+			</div>
 			<div>
-				<a class="btn btn-primary btn-sm m-1" href="">Save Draft</a>
-				<a class="btn btn-primary btn-sm m-1" href="">Submit Quest for Completion</a>
-				<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-					Drop Quest
-				</button>
+				{{ form.submit(class="btn btn-outline-info") }}
 			</div>
 		</fieldset>
+		</form>
 
 	<!-- Modal -->
 <!-- Modal -->
@@ -137,29 +190,31 @@
 			<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Confirm: You Want to drop this quest</h5>
+				<h5 class="modal-title" id="exampleModalLabel">Confirm: You Want to remove this feedback</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<form action="" method="quest">
-					<input class="btn btn-danger mt-3" type="submit" value="Delete">
+				<form action="{{ url_for('quests.feedback_remove', submission_id=submission.id) }}" method="post">
+					<input type="hidden" id="hidden_input" name="hidden_input">
+					<input class="btn btn-danger" type="submit" value="Delete">
 				</form>
 				</div>
 			</div>
 			</div>
 		</div>
 
-
-
-
-
 	<script>
 		$(document).ready(function() {
-			$('#submissionText').summernote({
-				height: 300,
+			$('#feedbackText').summernote({
+				height: 250,
 
 			});
 		});
+		function aTestFunction(obj){
+			let valuefromID = obj.id;
+			$('#hidden_input').val(valuefromID);
+		}
 	</script>
+
 {% endblock %}

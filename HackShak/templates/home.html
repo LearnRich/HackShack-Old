@@ -2,17 +2,12 @@
 {% block content %}
 
 {% for post in posts.items %}
-		<article class="media content-section">
-			<image class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.announcement_author.avatar_file) }}"></image>
-			<div class="media-body">
-				<div class="article-metadata">
-					<a class="mr-2" href="{{ url_for('users.user_announcements', username=post.announcement_author.username) }}">{{ post.announcement_author.username }}</a>
-					<small class="text-muted">on {{ post.date_posted.strftime('%d-%M-%Y') }}</small>
-				</div>
-				<h2><a class="article-title" href="{{ url_for('announcements.announcement', announcement_id=post.id)}}">{{ post.title }}</a></h2>
-				<p class="article-content">{{ post.content }}</p>
+		<div class="card mb-2">
+			<div class="card-body">
+				<h5 class="card-title"><a class="nav-link" href="{{ url_for('announcements.announcement', announcement_id=post.id)}}">{{ post.title }}</a></h6>
+				<p class="card-text">{{ post.content }}</5>
 			</div>
-		</article>
+		</div>
 	{% endfor %}
 	{% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
 		{% if page_num %}
