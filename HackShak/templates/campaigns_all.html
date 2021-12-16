@@ -8,14 +8,14 @@
         <thead>
         <tr>
             <th scope="col">Campaign Id</td>
-            <th scope="col">Campaign Name</th>
+            <th scope="col">Campaign Title</th>
         </tr>
         </thead>
         <tbody>
         {% for campaign in campaigns %}
         <tr  onClick="window.location.assign('{{ url_for('campaigns.campaign', campaign_id=campaign.id)}}')">
             <td scope="col">{{ campaign.id}}</a></td>
-            <td scope="col">{{ campaign.name }}</td>
+            <td scope="col">{{ campaign.title }}</td>
         </tr>
         {% endfor %}
         <tbody>

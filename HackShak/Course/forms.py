@@ -21,7 +21,7 @@ BC_CURRICULUM_CHOICES = [
 ]
 
 class CourseForm(FlaskForm):
-    course_name = StringField('Course Name', validators=[DataRequired()])
+    title = StringField('Course Name', validators=[DataRequired()])
     course_code = StringField('Course Code')
     description = TextAreaField('Description')
     block = IntegerField('Block', validators=[DataRequired()])

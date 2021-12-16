@@ -4,7 +4,7 @@
 <div class="content-section">
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link disabled" href="">{{ campaign.name }}</a>
+      <a class="nav-link disabled" href="">{{ campaign.title }}</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{{ url_for('campaigns.campaign', campaign_id=campaign.id) }}">Campaign Details</a>
@@ -19,7 +19,7 @@
       <div class="card">
         <div class="card-header">
           <div class="d-flex flex-row">
-            <div class="d-flex flex-fill justify-content-start">{{ campaign.name }} Quests</div>
+            <div class="d-flex flex-fill justify-content-start">{{ campaign.title }} Quests</div>
             <div class="d-flex">
               <a href="{{ url_for('campaigns.campaign_update', campaign_id=campaign.id) }}"><i class="bi bi-gear"></i></a>
             </div>
@@ -89,7 +89,7 @@
         data: {query:query},
         success: function(data) {
           $('#results_table_body').empty();
-          $.each(data.search_results, function(i, item) {
+          $.each(data, function(i, item) {
                     let tr=$('<tr></tr>');
                     let td = $('<td></td>')
                       .appendTo(tr)

@@ -5,94 +5,146 @@
 		{{ form.hidden_tag() }}
 		<fieldset class="form-group">
 			<legend class="border-bottom mb-4">{{ legend }}</legend>
-			<div class="form-group">
-				{{ form.title.label(class="form-control-label") }}
-				{% if form.title.errors %}
-					{{ form.title(class="form-control form-control-lg is-invalid") }}
-					<div class="invalid-feedback">
-						{% for error in form.title.errors %}
-						<span>{{ error }}</span>
-						{% endfor %}
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						{{ form.title.label(class="form-control-label") }}
+						{% if form.title.errors %}
+							{{ form.title(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.title.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ form.title(class="form-control form-control-lg") }}
+						{% endif %}
 					</div>
-				{% else %}
-					{{ form.title(class="form-control form-control-lg") }}
-				{% endif %}
-			</div>
-			
-			<div class="form-group">
-				{{ form.description.label(class="form-control-label") }}
-				{% if form.description.errors %}
-					{{ form.description(class="", id="description") }}
-					<div class="invalid-feedback">
-						{% for error in form.description.errors %}
-						<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.description(class="", id="description") }}
-				{% endif %}
-			</div>
-
-			<div class="form-group">
-				{{ form.xp.label(class="form-control-label") }}
-				{% if form.xp.errors %}
-					{{ form.xp(class="form-control form-control-lg is-invalid") }}
-					<div class="invalid-feedback">
-						{% for error in form.xp.errors %}
-						<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.xp(class="form-control form-control-lg") }}
-				{% endif %}
-			</div>
-
-			<div class="form-group">
-				{{ form.campaign.label(class="form-control-label") }}
-				<div>
-					<input class="form-control form-control-lg mb-1" id="campaign_search" placeholder="Start Typing Here to Seach Campaigns">
 				</div>
-
-				{% if form.campaign.errors %}
-					{{ form.campaign(class="form-control form-control-lg is-invalid", id="campaign_select") }}
-					<div class="invalid-feedback">
-						{% for error in form.campaign.errors %}
-						<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.campaign(class="form-control form-control-lg", id="campaign_select") }}
-				{% endif %}
 			</div>
-
-			<div class="form-group">
-				{{ form.expiry.label(class="form-control-label") }}
-				{% if form.expiry.errors %}
-					{{ form.expiry(class="form-control form-control-lg is-invalid") }}
-					<div class="invalid-feedback">
-						{% for error in form.expiry.errors %}
-						<span>{{ error }}</span>
-						{% endfor %}
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						{{ form.description.label(class="form-control-label") }}
+						{% if form.description.errors %}
+							{{ form.description(class="", id="description") }}
+							<div class="invalid-feedback">
+								{% for error in form.description.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ form.description(class="", id="description") }}
+						{% endif %}
 					</div>
-				{% else %}
-					{{ form.expiry(class="form-control form-control-lg") }}
-				{% endif %}
+				</div>
 			</div>
-
-			<div class="form-group">
-				{{ form.repeatable.label(class="form-control-label") }}
-				{% if form.repeatable.errors %}
-					{{ form.repeatable(class="form-control form-control-lg is-invalid") }}
-					<div class="invalid-feedback">
-						{% for error in form.repeatable.errors %}
-						<span>{{ error }}</span>
-						{% endfor %}
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						{{ form.xp.label(class="form-control-label") }}
+						{% if form.xp.errors %}
+							{{ form.xp(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.xp.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ form.xp(class="form-control form-control-lg") }}
+						{% endif %}
 					</div>
-				{% else %}
-					{{ form.repeatable(class="form-control form-control-lg") }}
-				{% endif %}
-			</div>
+					<div class="form-group">
+						{{ form.expiry.label(class="form-control-label") }}
+						{% if form.expiry.errors %}
+							{{ form.expiry(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.expiry.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ form.expiry(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+					<div class="form-group">
+						{{ form.repeatable.label(class="form-control-label") }}
+						{% if form.repeatable.errors %}
+							{{ form.repeatable(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.repeatable.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ form.repeatable(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						{{ form.campaign.label(class="form-control-label") }}
+						<div>
+							<input class="form-control form-control-lg mb-1" id="campaign_search" placeholder="Start Typing Here to Seach Campaigns">
+						</div>
 
+						{% if form.campaign.errors %}
+							{{ form.campaign(class="form-control form-control-lg is-invalid", id="campaign_select") }}
+							<div class="invalid-feedback">
+								{% for error in form.campaign.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ form.campaign(class="form-control form-control-lg", id="campaign_select") }}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="content-section mt-2 mb-2">
+				<div class=row>
+
+					<div class="col">
+						<div class="form-group">
+							{{ form.requirements.label(class="form-control-label") }}
+							<div>
+								<input class="form-control form-control-lg mb-1" id="requirement_search" placeholder="Start typing to seach quest (and badges)">
+							</div>
+							<table  id="requirement_results" class="table table-sm table-stripped">
+								<thead>
+									<tr>
+										<th class="col col-1">ID</td>
+										<th class="col">Quest Name</th>
+										<th class="col col-1"></th>
+									</tr>
+									</thead>
+									<tbody id="results_table_body">
+									</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col">
+						<table  id="required" class="table table-sm table-stripped">
+							<thead>
+								<tr>
+									<th class="col col-1">ID</td>
+									<th class="col">Quest Name</th>
+									<th class="col col-2"></th>
+								</tr>
+								</thead>
+								<tbody id="required_body">
+									{% for requirement in quest.requirements %}
+									<tr id="{{requirement.id}}">
+										<td class="col col-1">{{requirement.id}}</td>
+										<td class="col">{{requirement.title}}</td>
+										<td class="col col-1"><button id="{{requirement.id}}" type="button" class="removeRequirement btn btn-outline-danger btn-sm">Remove</button></td>
+									</tr>
+									{% endfor %}
+								</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
 			<div class="form-group">
 				{{ form.details.label(class="form-control-label") }}
 				{% if form.details.errors %}
@@ -126,8 +178,34 @@
 		</div>
 	</form>
 </div>
-<script>
+
+	<!-- Modal -->
+
+	<div class="modal" id="infoModal" tabindex="-1">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Requirement Warning</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<script type="text/javascript">
+	let  requirements = []
+
 	$(document).ready(function() {
+		$('#required_body tr').each(function(index) {
+			requirements.push({'id':$(this).attr('id')})
+		});
+
 		$('#description').summernote({
 			height: 100,
 		});
@@ -138,7 +216,7 @@
 			height: 300,
 		});
 
-		const load_data = function(query) {
+		const load_campaign_data = function(query) {
 			$.ajax({
 				url: "{{url_for('campaigns.campaigns_search', limit=10)}}",
 				method: "POST",
@@ -162,17 +240,96 @@
 				}
 			});
 		}
+		const load_quest_data = function(query) {
+			$.ajax({
+				url: "{{url_for('quests.quests_search', limit=10)}}",
+				method: "POST",
+				data: {query:query},
+				success: function(data) {
+					$('#results_table_body').empty();
+					$.each(data, function(i, item) {
+						let tr=$('<tr></tr>').attr('id', item.id);
+						tr.append($('<td class="col col-1"></td>').text(item.id));
+						tr.append($('<td class="col"></td>').text(item.title));
+						let td = $('<td class="col col-1" class="col-align-right"></td>')
+						td.append($('<button id="'+item.id+'" type="button" class="addRequirement btn btn-outline-primary btn-sm"></button>').text('Add'))
+
+						tr.append(td)
+
+						$('#results_table_body').append(tr);
+					});
+				}
+			});
+		}
 
 		$("#campaign_search").keyup(function() {
 			let search_str = $(this).val();
 			if(search_str != '') {
-				load_data(search_str);
+				load_campaign_data(search_str);
 			}
 			else {
 				$('#campaign_select').html("")
 			}
 		});
-	});	
+
+
+		$("#requirement_search").keyup(function() {
+			let search_str = $(this).val();
+			if(search_str != '') {
+				load_quest_data(search_str);
+			}
+			else {
+				$('#results_table_body').empty();
+			}
+		});
+
+	});
+	
+	$(document).on('click', 'button.addRequirement', function(event) {
+		let id = $(this).attr('id')
+		let row = $(this).parent().parent();
+
+		addRequirement = true
+		if(requirements.length > 0) {
+			let alreadyRequired = requirements.findIndex(x => x.id === id);
+			if (alreadyRequired>=0) {
+				addRequirement = false
+				let modalTitle =  $('.modal-title')
+				let modalBody =  $('.modal-body')
+
+				modalTitle.text('Alert')
+				modalBody.text('The requirement you are trying to add already exists!')
+				$("#infoModal").modal("show");
+			}
+		}
+		if(addRequirement) {
+			requirements.push({id: id})
+			console.log(requirements)
+			$('#requirements').val(JSON.stringify(requirements));
+			$(this).addClass("removeRequirement")
+			$(this).addClass("btn-outline-danger")
+			$(this).removeClass("addRequirement")
+			$(this).removeClass("btn-outline-primary")
+			$(this).text("Remove")
+			$('#required_body').append(row)
+		}
+	});
+
+	$(document).on('click', 'button.removeRequirement', function(event) {
+		let row = $(this).parent().parent();
+		let id = $(this).attr('id')
+		console.log(id)
+		console.log(typeof requirements)
+		let required = requirements.findIndex(x => x.id === id);
+		console.log(required)
+		if(required > -1) {
+			requirements.splice(required, 1);
+			$('#requirements').val(JSON.stringify(requirements));
+			$(row).remove();
+		}
+		
+		
+	});
 </script>
 
 {% endblock %}

@@ -3,7 +3,7 @@ from HackShak import __ADMIN_ROLE, __TEACHER_ROLE
 from flask_login import current_user, login_required
 from HackShak import db
 from HackShak.Users.utils import roles_required
-from HackShak.models import Course, Teacher, QuestSubmission, SubmissionStatus
+from HackShak.models import Course, Teacher, QuestSubmission, SubmissionStatus, QuestMap
 from HackShak.Course.forms import CourseForm
 
 courses = Blueprint('courses', __name__)
@@ -16,8 +16,8 @@ def course_create():
 	teacher = Teacher.query.get(current_user.id)
 	if form.validate_on_submit():
 		course = Course(
-			course_code = form.course_code.data,
-			course_name = form.course_name.data, 
+			code = form.course_code.data,
+			title = form.title.data, 
 			description=form.description.data, 
 			block=form.block.data, 
 			term=form.term.data, 
@@ -28,7 +28,7 @@ def course_create():
 		course.teachers.append(teacher)
 		db.session.commit()
 
-		flash(f'Course [{course.course_name}] has been created', 'success')
+		flash(f'Course [{course.title}] has been created', 'success')
 		return redirect(url_for('teachers.teacher_courses_current'))
 	return render_template('course_create.html', form=form, title='New Course', legend='New Course')
 
@@ -52,17 +52,17 @@ def course_update(course_id):
 
 	if form.validate_on_submit():
 		course.course_code = form.course_code.data
-		course.course_name = form.course_name.data
+		course.title = form.title.data
 		course.grade = form.grade.data
 		course.term = form.term.data
 		course.block = form.block.data
 		course.bc_curriculum = form.bc_curriculum.data
 		db.session.commit()
-		flash(f'Course [{course.course_name}] has been update', 'success')
+		flash(f'Course [{course.title}] has been update', 'success')
 		return redirect(url_for('teachers.teacher_courses_current'))
 	elif request.method == 'GET':
 		form.course_code.data = course.course_code
-		form.course_name.data = course.course_name
+		form.title.data = course.title
 		form.description.data = course.description
 		form.block.data = course.block
 		form.term.data = course.term
@@ -87,9 +87,57 @@ def course_quest_submissions(course_id):
 	print(submissions)
 	return render_template('course_quest_submissions.html', course=course, submissions=submissions)
 
-@courses.route('/course/<int:course_id>/quests/maps')
+@courses.route('/course/<int:course_id>/activities')
 @login_required
 @roles_required([__TEACHER_ROLE])
-def course_quests_maps(course_id):
+def course_activities(course_id):
 	course=Course.query.get_or_404(course_id)
-	return render_template('course_quests_maps.html', course=course)
+	return render_template('course_activities.html', course=course)
+
+
+@courses.route('/course/<int:course_id>/activity/add', methods=['POST'])
+@login_required
+@roles_required([__TEACHER_ROLE])
+def course_activity_add(course_id):
+    course = Course.query.get_or_404(course_id)
+    if request.method == 'POST':
+        selected_activity = request.form
+        print(selected_activity)
+        for activity_id in selected_activity:
+            activity = QuestMap.query.get(activity_id)
+            if activity:
+                if activity not in course.activities:
+                    course.activities.append(activity)
+                    flash(f"Activity: {activity.title} has been added to course: {course.title}", 'success')
+                else:
+                    flash(f"Activity: {activity.title} was already assigned to course: {course.title}", 'warning')
+    db.session.commit()
+    return redirect(url_for('courses.course_activities', course_id=course.id))
+
+
+@courses.route('/course/<int:course_id>/activity/<int:activity_id>/remove')
+@login_required
+@roles_required([__TEACHER_ROLE])
+def course_activity_remove(course_id, activity_id):
+    course = Course.query.get_or_404(course_id)
+    activity = QuestMap.query.get_or_404(activity_id)
+    if activity in course.activities:
+        course.activities.remove(activity)
+        db.session.commit()
+        flash(f"Activity have been removed from course: {course.title}", 'success')
+    else:
+        flash(f"Activity '{activity.title}' wasn't part of course and couldn't be removed", 'warning')
+    return redirect(url_for('courses.course_activities', course_id=course.id))
+
+@courses.route('/course/<int:course_id>/activity/setprimary', methods=['POST'])
+@login_required
+@roles_required([__TEACHER_ROLE])
+def course_set_primary_activity(course_id):
+    course = Course.query.get_or_404(course_id)
+    activity_id = request.form['set_primary']
+    print(activity_id)
+    activity = QuestMap.query.get_or_404(activity_id)
+    course.primary_activity = activity
+    db.session.commit()
+    flash(f"Activity '{activity.title}' has been set at the primary activity for course", 'success')
+    return redirect(url_for('courses.course_activities', course_id=course.id))

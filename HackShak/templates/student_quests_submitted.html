@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('students.student_quests_available') }}">Available</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('students.student_quests_in_progress') }}">In Progress</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url_for('students.student_quests_completed') }}">Completed</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('students.student_quests_past') }}">Past Courses</a>
+        </li>
+    </ul>
+
+    <table class="table table-stripped table-hover table-lg">
+        <thead>
+            <tr>
+                <th></th>
+                <th scope="col"></td>
+                <th scope="col">Quest </th>
+                <th scope="col">XP</th>
+                <th scope="col">Campaign</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% if submissions|length > 0 %}
+                    {% for submission in submissions %}
+                    <tr style="vertical-align: middle;" onClick="window.location.assign('{{ url_for('quests.quest_submission', submission_id=submission.id)}}')">
+                        <td class="col col-1"><img class="logo_thumb" src="{{url_for('static', filename='imgs/quests/' + submission.quest.logo_file)}}" alt="Quest Avatar"/></td>
+                        <td class="col">{{ submission.quest.title }}</td>
+                        <td class="col col-1">{{ submission.quest.xp }}</td>
+                        <td class="col col-3">{{ submission.quest.campaign.name }}</td>
+                        <td class="col col-1">{{ submission.status }}</td>
+                    </tr>
+    
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan='6'>No quests currently completed.</td>
+                </tr>
+                {% endif %}
+            <tbody>
+    </table>
+    
+</div>
+
+{% endblock %}

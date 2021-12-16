@@ -4,7 +4,7 @@
 <div class="content-section">
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link disabled" href="">{{ campaign.name }}</a>
+      <a class="nav-link disabled" href="">{{ campaign.title }}</a>
     </li>
     <li class="nav-item">
       <a class="nav-link active" aria-current="page" href="{{ url_for('campaigns.campaign', campaign_id=campaign.id) }}">Campaign Details</a>
@@ -19,7 +19,7 @@
       <div class="card">
         <div class="card-header">
           <div class="d-flex flex-row">
-            <div class="d-flex flex-fill justify-content-start">{{ campaign.name }} Details</div>
+            <div class="d-flex flex-fill justify-content-start">{{ campaign.title }} Details</div>
             <div class="d-flex">
               <a href="{{ url_for('campaigns.campaign_update', campaign_id=campaign.id) }}"><i class="bi bi-gear"></i></a>
             </div>
@@ -28,7 +28,7 @@
 
         </div>
         <div class="card-body">
-          <h5 class="card-title">{{ campaign.name }}</h5>
+          <h5 class="card-title">{{ campaign.title }}</h5>
           <p class="card-text">{{ campaign.description }}</p>
         </div>
       </div>

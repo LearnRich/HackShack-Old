@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link disabled" href="">{{ questmap.name }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="{{ url_for('questmaps.questmap', questmap_id=questmap.id) }}">Quest Map Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('questmaps.questmap_quests', questmap_id=questmap.id) }}">Quest Map Manager</a>
+    </li>
+  </ul>
+
+  <div class="row mt-2">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex flex-row">
+            <div class="d-flex flex-fill justify-content-start">{{ questmap.title }} Details</div>
+            <div class="d-flex">
+              <a href="{{ url_for('questmaps.questmap_update', questmap_id=questmap.id) }}"><i class="bi bi-gear"></i></a>
+            </div>
+          </div>
+        
+
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ questmap.name }}</h5>
+          <p class="card-text">{{ questmap.description }}</p>
+          <h6 class="card-title">Root Quest</h6>
+          <p class="card-text">
+            {% if questmap.primary_quest.title|length == 0 %}
+            Nothing Assigned
+            {% else %}
+            {{ questmap.primary_quest.title }}</p>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex flex-row">
+            <div class="d-flex flex-fill justify-content-start">Quests</div>
+            
+          </div>
+        
+
+        </div>
+        <div class="card-body">
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th class="col col-1">ID</td>
+                <th class="col">Quest</th>
+                <th class="col col-1">XP</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quest in questmap.quests %}
+              {% if questmap.primary_quest %}
+                {% if quest == questmap.primary_quest %}
+                <tr class="primary" onClick="window.location.assign('{{ url_for('quests.quest', quest_id=quest.id)}}')">
+                {% else %}
+                <tr onClick="window.location.assign('{{ url_for('quests.quest', quest_id=quest.id)}}')">
+                {% endif %}
+              {% endif %}
+                <td class="col col1">{{ quest.id}}</a></td>
+                <td class="col">{{ quest.title }}</td>
+                <td class="col col-1">{{ quest.xp }}</td>
+            </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        </div>
+      </div>
+
+
+      
+    </div>
+  </div>
+
+
+
+</div>
+
+
+{% endblock %}

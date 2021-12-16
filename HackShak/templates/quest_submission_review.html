@@ -73,23 +73,23 @@
 		</div>
         <div class="row">
 			<div class="col">
-			<div class="card">
+				<div class="card">
 				<div class='card-header'>
 					<h6 class="card-title">
-						Past Feedback
+						Submission Log
 					</h6>
 				</div>
 				<div class="card-body">
 					<div class="card-text">
 					<ul class="list-group">
-						{% for feedback in submission.feedback %}
-						<li class="list-group-item d-flex justify-content-between align-items-start">
+						{% for log in submission.submission_logs %}
+							<li class="list-group-item d-flex justify-content-between align-items-start {{ log.category }} ">
 							<div class="ms-2 me-auto">
-								<div>{{ feedback.feedback_text|safe }}</div>
+								<div>{{ log.content|safe }}</div>
 							</div>
 							<span class="badge bg-danger">
 								<a data-toggle="modal" class="btn btn-sm"
-									id="{{ feedback.id }}" value="Delete"
+									id="{{ log.id }}" value="Delete"
 									data-target="#deleteModal"
 									onclick="aTestFunction(this)">Remove</a>            
 								</a>
@@ -98,22 +98,6 @@
 						{% endfor %}
 					</ul>
 					</div>
-				</div>			
-			</div>
-		</div>
-		</div>
-		<div class="row">
-			<div class="col">
-			<div class="card">
-				<div class='card-header'>
-					<h6 class="card-title">
-						Submissions
-					</h6>
-				</div>
-				<div class="card-body">
-					<p class="card-text">
-						{{ submission.submission_text|safe }}
-					</p>
 				</div>			
 			</div>
 		</div>
@@ -147,20 +131,6 @@
 					</div>
 					<div class="card-body">
 						<p class="card-text">
-							{% if form.feedback_text.errors %}
-								{{ form.feedback_text(class="is-invalid", id="feedbackText") }}
-								<div class="invalid-feedback">
-									{% for error in form.feedback_text.errors %}
-									<span>{{ error }}</span>
-									{% endfor %}
-								</div>
-							{% else %}
-								{{ form.feedback_text(class="", id="feedbackText") }}
-							{% endif %}						
-						</p>
-					</div>	
-					<div class="card-body">
-						<p class="card-text">
 							{{ form.awarded_xp.label(class="form-control-label") }}
 							{% if form.awarded_xp.errors %}
 								{{ form.awarded_xp(class="form-control form-control-lg is-invalid") }}
@@ -174,6 +144,36 @@
 							{% endif %}			
 						</p>
 					</div>	
+					<div class="card-body">
+						<p class="card-text">
+							{{ form.feedback_category.label(class="form-control-label") }}
+							{% if form.feedback_category.errors %}
+								{{ form.feedback_category(class="form-control form-control-lg is-invalid") }}
+								<div class="invalid-feedback">
+									{% for error in form.feedback_category.errors %}
+									<span>{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.feedback_category(class="form-control form-control-lg") }}
+							{% endif %}			
+						</p>
+					</div>	
+					<div class="card-body">
+						<p class="card-text">
+							{% if form.feedback_text.errors %}
+								{{ form.feedback_text(class="is-invalid", id="feedbackText") }}
+								<div class="invalid-feedback">
+									{% for error in form.feedback_text.errors %}
+									<span>{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.feedback_text(class="", id="feedbackText") }}
+							{% endif %}						
+						</p>
+					</div>	
+					
 					
 				</div>
 			</div>

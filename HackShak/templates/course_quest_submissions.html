@@ -4,13 +4,13 @@
 <div class="content-section">
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link disabled" href="">{{ course.course_name }}</a>
+      <a class="nav-link disabled" href="">{{ course.title }}</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{{ url_for('courses.course_details', course_id=course.id) }}">Course Details</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link"  href="{{ url_for('courses.course_quests_maps', course_id=course.id) }}">Content Management</a>
+      <a class="nav-link"  href="{{ url_for('courses.course_activities', course_id=course.id) }}">Activity Management</a>
     </li>
     <li class="nav-item">
       <a class="nav-link"  href="{{ url_for('courses.course_studentlist', course_id=course.id) }}">Student List</a>

@@ -26,3 +26,7 @@ def datetimepassed(value):
     now = datetime.now()
     time_difference = now - value
     return strfdelta(time_difference)
+
+
+def get_class(obj):
+    return obj.__class__.__name__

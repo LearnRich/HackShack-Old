@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url_for('students.student_quests_available') }}">Available</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('students.student_quests_in_progress') }}">In Progress</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('students.student_quests_completed') }}">Completed</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('students.student_quests_past') }}">Past Courses</a>
+        </li>
+    </ul>
+
+    <div>
+
+        <table class="table table-stripped table-hover table-lg">
+            <thead>
+                <tr>
+                    <th class="col col-1"></td>
+                    <th class="col">Quest </th>
+                    <th class="col">XP</th>
+                    <th class="col">Campaign</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if available|length > 0 %}
+                    {% for quest in available %}
+                    <tr style="vertical-align: middle;" onClick="window.location.assign('{{ url_for('quests.quest', quest_id=quest.id)}}')">
+                        <td class="col col-1"><img class="logo_thumb" src="{{url_for('static', filename='imgs/quests/' + quest.logo_file)}}" alt="Quest Avatar"/></td>
+                        <td class="col">{{ quest.title }}</td>
+                        <td class="col col-1">{{ quest.xp }}</td>
+                        <td class="col">{{ quest.campaign.name }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan='6'>No available quests</td>
+                </tr>
+                {% endif %}
+                <tbody>
+        </table>
+
+
+
+    </div>
+    
+</div>
+
+{% endblock %}

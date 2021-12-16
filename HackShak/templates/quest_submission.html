@@ -2,44 +2,45 @@
 {% block content %}
 
 <article class="media content-section">
-		<div class="row">
-			<div class="col col-lg-8">
-				<div class="card">
-					<div class='card-header'>
-						<h6 class="card-title">
-							Quest Info
-						</h6>
-					</div>
-					<div class="card-body">
-						<h2>{{ submission.quest.title }}</h2>
-						<p class="card-text">
-							{{ submission.quest.description|safe }}
-						</p>
-					</div>			
+	<div class="row mb-1">
+		<div class="col col-lg-8">
+			<div class="card">
+				<div class='card-header'>
+					<h6 class="card-title">
+						Quest Info
+					</h6>
 				</div>
-			</div>
-			<div class="col-sm">
-				<div class="card">
-					<div class='card-header'>
-						<h6 class="card-title">
-							Stats
-						</h6>
-					</div>
-					<div class="card-body">
-						<p class="card-text">
-							<ul>
-								<li>XP: {{ submission.quest.xp }}</li>
-								<li>Campaign: -</li>
-								<li>Expiry: {{ submission.quest.expiry }}</li>
-								<li>Repeatable: {{ submission.quest.repeatable }}</li>
-								<li>Requirements: None</li>
-							</ul>
-						</p>
-					</div>			
-				</div>
+				<div class="card-body">
+					
+					<p class="card-text">
+						{{ submission.quest.description|safe }}
+					</p>
+				</div>			
 			</div>
 		</div>
-		<div class="row">
+		<div class="col-sm">
+			<div class="card">
+				<div class='card-header'>
+					<h6 class="card-title">
+					Stats
+					</h6>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						<ul>
+							<li>XP: {{ submission.quest.xp }}</li>
+							<li>Campaign: -</li>
+							<li>Expiry: {{ submission.quest.expiry }}</li>
+							<li>Repeatable: {{ submission.quest.repeatable }}</li>
+							<li>Requirements: None</li>
+						</ul>
+					</p>
+				</div>			
+			</div>
+		</div>
+	</div>
+	<div class="row mb-1">
+		<div class="col">
 			<div class="card">
 				<div class='card-header'>
 					<h6 class="card-title">
@@ -53,7 +54,9 @@
 				</div>			
 			</div>
 		</div>
-		<div class="row">
+	</div>
+	<div class="row mb-1">
+		<div class="col">
 			<div class="card">
 				<div class='card-header'>
 					<h6 class="card-title">
@@ -67,7 +70,9 @@
 				</div>			
 			</div>
 		</div>
-        <div class="row">
+	</div>
+	<div class="row mb-1">
+		<div class="col">
 			<div class="card">
 				<div class='card-header'>
 					<h6 class="card-title">
@@ -77,12 +82,12 @@
 				<div class="card-body">
 					<p class="card-text">
 						<ul class="list-group">
-							{% for feedback in submission.feedback %}
-							<li class="list-group-item d-flex justify-content-between align-items-start">
+							{% for log in submission.submission_logs %}
+							<li class="list-group-item d-flex justify-content-between align-items-start {{ log.category }} ">
 								<div class="ms-2 me-auto">
-									<div>{{ feedback.feedback_text|safe }}</div>
+									<div>{{ log.content|safe }}</div>
 								</div>
-								<span class="badge bg-light text-dark">{{ feedback.teacher.firstname }} {{ feedback.teacher.lastname }}<br/>{{feedback.feedback_date|datetimeformat}}</span>
+								<div class="badge bg-light text-dark">{{log.user.firstname}} {{log.user.lastname}} | {{log.date_posted|datetimeformat}}</div>
 							</li>
 							{% endfor %}
 						</ul>						
@@ -90,76 +95,75 @@
 				</div>			
 			</div>
 		</div>
-		<form method="POST" action="">
-			{{ form.hidden_tag() }}
-			<fieldset class="form-group">
-			<div class="row">
-				<div class="card">
-					<div class='card-header'>
-						<h6 class="card-title">
-							Submission Form
-						</h6>
+	</div>
+	<form method="POST" action="">
+		{{ form.hidden_tag() }}
+		<fieldset class="form-group">
+			<div class="row mb-1">
+				<div class="col">
+					<div class="card">
+						<div class='card-header'>
+							<h6 class="card-title">
+								Submission Form
+							</h6>
+						</div>
+						<div class="card-body">
+							<p class="card-text">
+								{% if form.submission_text.errors %}
+									{{ form.submission_text(class="is-invalid", id="submission_text") }}
+									<div class="invalid-feedback">
+										{% for error in form.submission_text.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.submission_text(class="", id="submission_text") }}
+								{% endif %}						
+							</p>
+							</div>	
+						<div class="card-body">
+							<p class="card-text">
+								Attach files
+							</p>
+						</div>	
 					</div>
-					<div class="card-body">
-						<p class="card-text">
-							{% if form.submission_text.errors %}
-								{{ form.submission_text(class="is-invalid", id="submissionText") }}
-								<div class="invalid-feedback">
-									{% for error in form.submission_text.errors %}
-									<span>{{ error }}</span>
-									{% endfor %}
-								</div>
-							{% else %}
-								{{ form.submission_text(class="", id="submissionText") }}
-							{% endif %}						
-						</p>
-					</div>	
-					<div class="card-body">
-						<p class="card-text">
-							Attach files
-						</p>
-					</div>	
-					
 				</div>
 			</div>
-			<div>
-				<a class="btn btn-primary btn-sm m-1" href="">Save Draft</a>
-				<a class="btn btn-primary btn-sm m-1" href="">Submit Quest for Completion</a>
-				<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-					Drop Quest
-				</button>
+			<div class="row mb-1">
+				<div class="col">
+					{{ form.save(class="btn btn-primary btn-sm") }}
+					{{ form.submit(class="btn btn-primary btn-sm") }}
+					<button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+						Drop Quest
+					</button>
+				</div>
 			</div>
 		</fieldset>
+	</form>
+</article>
 
-	<!-- Modal -->
 <!-- Modal -->
-		<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Confirm: You Want to drop this quest</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<form action="" method="quest">
-					<input class="btn btn-danger mt-3" type="submit" value="Delete">
-				</form>
-				</div>
-			</div>
-			</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Confirm: You Want to drop this quest</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+			<a class="btn btn-danger btn-sm" href="{{ url_for('quests.quest_submission_drop', submission_id=submission.id) }}">Drop</a>
+		</div>
+	</div>
+	</div>
+</div>
 
+<script>
+	$(document).ready(function() {
+		$('#submission_text').summernote({
+			height: 300,
 
-
-
-
-	<script>
-		$(document).ready(function() {
-			$('#submissionText').summernote({
-				height: 300,
-
-			});
 		});
-	</script>
+	});
+</script>
 {% endblock %}

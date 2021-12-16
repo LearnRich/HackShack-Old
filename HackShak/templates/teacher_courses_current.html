@@ -21,7 +21,7 @@
     <tbody>
       {% for course in courses %}
         <tr onClick="window.location.assign('{{ url_for('courses.course_details', course_id=course.id)}}')">
-          <td>{{ course.course_name }}</td>
+          <td>{{ course.title }}</td>
           <td>{{ course.block }}</td>
           <td>{{ course.term }}</td>
         </tr>

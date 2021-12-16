@@ -24,12 +24,12 @@ def campaign_create():
     form = CampaignForm()
     if form.validate_on_submit():
         campaign = Campaign(
-            name = form.name.data,
+            title = form.title.data,
             description = form.description.data
         )
         db.session.add(campaign)
         db.session.commit()
-        flash(f"Your campaign: {campaign.name}, has been created.", 'success')
+        flash(f"Your campaign: {campaign.title}, has been created.", 'success')
         return redirect(url_for('campaigns.campaigns_all'))
     return render_template('campaign_create.html',form=form, title='New Campaign', legend='New Campaign')
 
@@ -47,13 +47,13 @@ def campaign_update(campaign_id):
     campaign = Campaign.query.get_or_404(campaign_id)
     form = CampaignForm()
     if form.validate_on_submit():
-        campaign.name = form.name.data
+        campaign.title = form.title.data
         campaign.description = form.description.data
         db.session.commit()
-        flash(f"Your campaign {campaign.name} has been update.", 'success')
+        flash(f"Your campaign {campaign.title} has been update.", 'success')
         return redirect(url_for('campaigns.campaign', campaign_id=campaign.id))
     elif request.method == 'GET':
-        form.name.data = campaign.name
+        form.title.data = campaign.title
         form.description.data = campaign.description
     return render_template('campaign_create.html',form=form, title='Update Campaign', legend='Update Campaign')
 
@@ -80,9 +80,9 @@ def campaign_quest_add(campaign_id):
                 if quest not in campaign.quests:
                     campaign.quests.append(quest)
                     add_count += 1
-                    flash(f"Quest: {quest.title} has been added to campaign: {campaign.name}", 'success')
+                    flash(f"Quest: {quest.title} has been added to campaign: {campaign.title}", 'success')
                 else:
-                    flash(f"Quest: {quest.title} was already assigned to campaign: {campaign.name}", 'warning')
+                    flash(f"Quest: {quest.title} was already assigned to campaign: {campaign.title}", 'warning')
     db.session.commit()
     return redirect(url_for('campaigns.campaign_quests', campaign_id=campaign.id))
 
@@ -110,12 +110,12 @@ def campaigns_search(limit):
     json_campaign_list = []
     if request.method == 'POST':
         print(request.form)
-        campaign_name_qry = request.form['query']
+        campaign_title_qry = request.form['query']
 
         if limit:
-            campaigns = Campaign.query.filter(Campaign.name.contains(campaign_name_qry)).limit(limit).all()
+            campaigns = Campaign.query.filter(Campaign.title.contains(campaign_title_qry)).limit(limit).all()
         else:
-            campaigns = Campaign.query.filter(Campaign.name.contains(campaign_name_qry)).all()
+            campaigns = Campaign.query.filter(Campaign.title.contains(campaign_title_qry)).all()
 
         campaign_schema = CampaignSchema()
         for campaign in campaigns:

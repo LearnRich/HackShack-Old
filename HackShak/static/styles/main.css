@@ -107,3 +107,41 @@ a.article-title:hover {
 .bold {
 	font-weight: bold;
 }
+
+.col-align-right {
+	text-align: end; 
+}
+blockquote {
+	font-style: italic;
+	border-left: 2px solid #5f788a;
+	padding-left: 5px;
+}
+
+.primary {
+	font-weight: bold;
+}
+
+.logo_thumb {
+	height: 50px;
+	width: 50px;
+}
+
+.submission-post {
+	background-color: rgba(248, 249, 250, 0.2);
+}
+
+.feedback-info {
+	background-color: rgba(23, 162, 184, 0.2);
+}
+
+.feedback-success {
+	background-color: rgba(40, 167, 69, 0.2);
+}
+
+.feedback-warning {
+	background-color: rgba(255, 193, 7, 0.2);
+}
+
+.feedback-danger {
+	background-color: rgba(220, 53, 69, 0.2);
+}

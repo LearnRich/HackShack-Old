@@ -9,14 +9,24 @@ course_enrollment = db.Table('course_enrollment',
 	db.Column('student_id', db.ForeignKey('student.id'), primary_key=True)
 )
 
+course_questmaps = db.Table('course_questmaps',
+	db.Column('course_id', db.ForeignKey('course.id'), primary_key=True),
+	db.Column('questmap_id', db.ForeignKey('quest_map.id'), primary_key=True)
+)
+
 taught_by = db.Table('taught_by',
 	db.Column('course_id', db.ForeignKey('course.id'), primary_key=True),
 	db.Column('teacher_id', db.ForeignKey('teacher.id'), primary_key=True)
 )
 
-quest_requirements = db.Table("quest_requirements",
-	db.Column('base_quest_id', db.Integer, db.ForeignKey('quest.id')),
-	db.Column('required_quest_id', db.Integer, db.ForeignKey('quest.id'))
+quest_map_association = db.Table('quest_map_quest_map_association',
+	db.Column('quest_map_id', db.ForeignKey('quest_map.id'), primary_key=True),
+	db.Column('quest_id', db.ForeignKey('quest.id'), primary_key=True)
+)
+
+activity_requirement = db.Table("activity_requirement",
+	db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True),
+	db.Column('requirement_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True)
 )
 
 class Role(db.Model):
@@ -128,8 +138,11 @@ class Teacher(User):
 class SubmissionStatus(enum.Enum):
 	IN_PROGRESS = 'In Progress'
 	SUBMITTED = 'Submitted'
-	RETURNED = 'Returned'
+	COMPLETED = 'Returned'
 	DROPPED = 'Dropped'
+
+	def __str__(self):
+		return '{0}'.format(self.value)
 
 # Students should really only be able to be enrolled in one active lass
 # per semester, currently system will only handle this situation
@@ -148,10 +161,19 @@ class Student(User):
 		total_xp = 0
 		enrolled_course = self.get_current_enrolled_course()
 		if enrolled_course != None:
-			returned_work = QuestSubmission.query.filter_by(course_id=enrolled_course.id,status=SubmissionStatus.RETURNED).all()
+			returned_work = QuestSubmission.query.filter_by(course_id=enrolled_course.id,status=SubmissionStatus.COMPLETED).all()
 			for work in returned_work:
 				total_xp += work.xp_awarded
-		return total_xp
+		return total_xp + 150
+
+	def get_submitted_xp(self):
+		total_xp = 0
+		enrolled_course = self.get_current_enrolled_course()
+		if enrolled_course != None:
+			returned_work = QuestSubmission.query.filter_by(course_id=enrolled_course.id,status=SubmissionStatus.SUBMITTED).all()
+			for work in returned_work:
+				total_xp += work.xp_awarded
+		return total_xp +200
 	
 	def get_current_rank(self):
 		rank = Rank.query.filter(Rank.xp<=self.get_xp()).order_by(Rank.xp.desc()).first()
@@ -184,31 +206,88 @@ class Student(User):
 		return submitted
 	
 	def get_completed_work_list(self):
-		completed =  QuestSubmission.query.filter_by(status=SubmissionStatus.RETURNED, student_id=self.id).all()
+		completed =  QuestSubmission.query.filter_by(status=SubmissionStatus.COMPLETED, student_id=self.id).all()
 		return completed
+
+	def quest_requirements_met(self, quest_id):
+		quest = Quest.query.get(quest_id)
+		#if requirements has length 0 then no requirements and safe to continue
+		submitted_ids = [submission.quest.id for submission in QuestSubmission.query.filter(QuestSubmission.student_id==self.id,
+														QuestSubmission.status.in_((SubmissionStatus.SUBMITTED, SubmissionStatus.COMPLETED))).all()]
+		print(submitted_ids)
+		print(quest.requirements)
+		if len(quest.requirements) > 0:
+			for requirement in quest.requirements:
+				if requirement.id not in submitted_ids:
+					# the requirement could not be found in the submitted and returned - therefore requirement not met
+					return False
+		return True
+
+	def find_available(self, quest_node, available_list):
+		print(quest_node)
+		print(available_list)
+		if quest_node:
+			submissions = QuestSubmission.query.filter(QuestSubmission.student_id==self.id,
+														QuestSubmission.quest_id==quest_node.id,
+														QuestSubmission.status.in_((SubmissionStatus.SUBMITTED, SubmissionStatus.COMPLETED, SubmissionStatus.IN_PROGRESS))).all()
+			print(submissions)
+			if submissions:
+				print("There is a submission")
+				print(submissions)
+				print(quest_node.requirement_for)
+				for quest in quest_node.requirement_for:
+					print(quest.title)
+					self.find_available(quest, available_list)
+			else:
+				# Need to check that the required activity is actually a quest and add the quest object to the avilable list
+				available_quest = Quest.query.get(quest_node.id)
+				if available_quest:
+					available_list.append(available_quest)
+		return available_list 
+
+
 
 	def __repr__(self):
 		return f"Student('{self.username}', '{self.email}', '{self.avatar_file}')"	
 
-
-
-class Campaign(db.Model):
-	__tablename__ = 'campaign'
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(100), nullable=False)
-	description = db.Column(db.Text)
-
-	quests = db.relationship("Quest", back_populates='campaign')
-
-
-
-class Quest(db.Model):
-	__tablename__ = "quest"
+class Activity(db.Model):
+	__tablename__ = "activity"
 	id = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.String(100), nullable=False)
-	date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	description = db.Column(db.Text, nullable=True)
 	xp = db.Column(db.Integer, nullable=False)
+	logo_file = db.Column(db.String(20), nullable=False, default='default.png')
+
+	requirements = db.relationship("Activity",
+						secondary=activity_requirement,
+						primaryjoin=id==activity_requirement.c.activity_id,
+						secondaryjoin=id==activity_requirement.c.requirement_id,
+						backref="requirement_for")
+						
+	def update_requirements(self, requiments_list):
+		print(self.requirements)
+		req_ids_check_list = [x.id for x in self.requirements ]
+		# add 
+		print(requiments_list)
+		for req_item in requiments_list:
+			try:
+				if int(req_item['id']) not in req_ids_check_list:
+					if int(req_item['id']) != self.id:
+						self.requirements.append(Activity.query.get(req_item['id']))
+			except:
+				# Return a error object to indicate the issue.
+				return False
+		# remove
+		req_ids_check_list =  [int(x['id']) for x in requiments_list ]
+		for requirement in self.requirements:
+			if requirement.id not in req_ids_check_list:
+				self.requirements.remove(requirement)
+		return True
+
+class Quest(Activity):
+	__tablename__ = "quest"
+	id = db.Column(db.Integer, db.ForeignKey('activity.id'), primary_key=True)
+	date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	expiry = db.Column(db.String(100), nullable=True)
 	repeatable = db.Column(db.String(100), nullable=True)
 	details = db.Column(db.Text, nullable=True)
@@ -218,24 +297,31 @@ class Quest(db.Model):
 	author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 	campaign = db.relationship('Campaign', back_populates='quests')
-	required_quests = db.relationship(
-		'Quest',
-		secondary=quest_requirements,
-		primaryjoin=(quest_requirements.c.base_quest_id == id),
-		secondaryjoin=(quest_requirements.c.required_quest_id == id),
-		backref = db.backref('required_quest', lazy='dynamic'), lazy='dynamic'
-		)
 
+class SubmissionLogCategory(enum.Enum):
+	STUDENT = 'submission-post'
+	FEEDBACK = 'feedback-info'
+	SUCCESS = 'feedback-success'
+	WARNING = 'feedback-warning'
+	DANGER = 'feedback-danger'
+	SECONDARY = 'feedback-secondary'
 
-class SubmissionFeedback(db.Model):
-	__tablename__ = 'submission_feedback'
+	def __str__(self):
+		return '{0}'.format(self.value)
+
+class SubmissionLog(db.Model):
+	__tablename__ = 'submission_log'
 	id = db.Column(db.Integer, primary_key=True)
 	submission_id = db.Column(db.Integer, db.ForeignKey('quest_submission.id'), nullable=False)
-	teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
-	feedback_text = db.Column(db.Text)
-	feedback_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-	teacher = db.relationship('Teacher')
+	content = db.Column(db.Text)
+	date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)	
+	category = db.Column(db.Enum(SubmissionLogCategory, values_callable=lambda x: [str(member.value) for member in SubmissionLogCategory]), default=SubmissionLogCategory.STUDENT)
+
+	submission = db.relationship("QuestSubmission", back_populates="submission_logs")
+	user = db.relationship("User")
+
 
 class QuestSubmission(db.Model):
 	__tablename__ = 'quest_submission'
@@ -257,7 +343,7 @@ class QuestSubmission(db.Model):
 	quest = db.relationship("Quest")
 	student = db.relationship("Student", back_populates='submissions')
 	course = db.relationship("Course")
-	feedback = db.relationship("SubmissionFeedback")
+	submission_logs = db.relationship("SubmissionLog", back_populates="submission")
 
 	def get_quest_name(self):
 		quest = Quest.query.filter_by(id=self.quest_id).first()
@@ -269,26 +355,55 @@ class QuestSubmission(db.Model):
 	def __repr__(self):
 		return f"QuestSubmission('{self.quest.title}', '{self.status}')"
 
+class Campaign(db.Model):
+	__tablename__ = 'campaign'
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(100), nullable=False)
+	description = db.Column(db.Text)
+
+	quests = db.relationship("Quest", back_populates='campaign')
+
+
+class QuestMap(db.Model):
+	__tablename__ = 'quest_map'
+	id = id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(100), nullable=False)
+	description = db.Column(db.Text)
+	primary_activity_id = db.Column(db.Integer, db.ForeignKey('quest.id'))	
+
+	primary_quest = db.relationship("Quest")
+	quests = db.relationship("Quest", secondary=quest_map_association, backref="questmaps_in")
+
 class Course(db.Model):
 	__tablename__ = "course"
 	id = db.Column(db.Integer, primary_key=True)
-	course_code = db.Column(db.String(100))
-	course_name = db.Column(db.String(100), nullable=False)
+	code = db.Column(db.String(100))
+	title = db.Column(db.String(100), nullable=False)
 	description = db.Column(db.Text)
 
-	base_quest_map = db.Column(db.String(50)) # change this to foriegn key with quest maps is created
+	primary_activity_id = db.Column(db.Integer, db.ForeignKey('quest_map.id'), nullable=True) 
 	grade = db.Column(db.String(2), nullable=False)
 	block = db.Column(db.String(1), nullable=False)
 	term = db.Column(db.String(10), nullable=False)
 	archived = db.Column(db.Boolean, default=False, nullable=False)
 	bc_curriculum = db.Column(db.String(100))
 
+	primary_activity = db.relationship("QuestMap")
 	teachers = db.relationship('Teacher', secondary=taught_by, back_populates='courses')
-
 	students = db.relationship("Student", secondary=course_enrollment, back_populates="courses")
-	
+	activities = db.relationship("QuestMap", secondary=course_questmaps, backref="courses_in")
+
+
+	def get_primary_quest(self):
+		if self.primary_activity:
+			if isinstance(self.primary_activity, Quest):
+				return self.primary_activity
+			elif isinstance(self.primary_activity, QuestMap):
+				return self.primary_activity.primary_quest
+		return None 
+
 	def __repr__(self):
-		return f"Course('{self.course_name}', '{self.description}')"
+		return f"Course('{self.title}', '{self.description}')"
 
 class Rank(db.Model):
 	__tablename__ = "rank"
@@ -300,22 +415,11 @@ class Rank(db.Model):
 	def __repr__(self):
 		return f"Rank('{self.name}', '{self.xp}')"
 
-badge_requirements = db.Table("badge_requirements",
-	db.Column('badge_id', db.Integer, db.ForeignKey('badge.id')),
-	db.Column('required_quest_id', db.Integer, db.ForeignKey('quest.id'))
-)
-
-class Badge(db.Model):
+class Badge(Activity):
 	__tablename__ = "badge"
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(100), nullable=False)
-	description = db.Column(db.Text)
+	id = db.Column(db.Integer, db.ForeignKey('activity.id'), primary_key=True)
 	type = db.Column(db.String(100), nullable=False)  # Talents || Achievements || Awards
-
-	required_quests = db.relationship("Quest", secondary=badge_requirements, backref = db.backref('badge_required_quest', lazy='dynamic'), lazy='dynamic')
-
-	xp = db.Column(db.Integer(), nullable=False)
-	badge_image = db.Column(db.String(100), nullable=False)
+	badge_image = db.Column(db.String(100), nullable=False, default="default.png")
 
 class MessageCategory(enum.Enum):
 	MESSAGE = 'Message'
@@ -358,10 +462,4 @@ class Notification(db.Model):
 	to_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	from_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-
-
-course_taught_by = db.Table('course_taught_by', 
-	db.Column('course_id', db.ForeignKey('course.id'), primary_key=True),
-	db.Column('teacher_id', db.ForeignKey('teacher.id'), primary_key=True),
-)
 '''

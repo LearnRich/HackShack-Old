@@ -35,7 +35,14 @@
 								<li>Campaign: {{ quest.campaign.name }}</li>
 								<li>Expiry: {{ quest.expiry }}</li>
 								<li>Repeatable: {{ quest.repeatable }}</li>
-								<li>Requirements: None</li>
+								<li>Requirements: 
+									{% if quest.requirements %}
+										{% for requirement in quest.requirements %}
+											<a href="{{ url_for('quests.quest', quest_id=requirement.id) }}">{{requirement.title}}</a>
+										{% endfor %}							
+									{% endif %}
+
+								</li>
 							</ul>
 						</p>
 					</div>			
@@ -71,7 +78,11 @@
 			</div>
 		</div>
 		<div>
-			<a class="btn btn-primary btn-sm m-1" href="">Start</a>
+			{% if current_user.has_role('student') %}
+				{% if current_user.get_role_obj().quest_requirements_met(quest.id) %}
+					<a class="btn btn-primary btn-sm m-1" href="{{ url_for('quests.quest_submission_start', quest_id=quest.id) }}">Start</a>
+				{% endif %}
+			{% endif %}
 		</div>
 		{% if current_user.has_role('teacher') or current_user.has_role('admin') %}
 		<div class="row">

@@ -19,6 +19,13 @@
 							</ul>
 						</li>						
 						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button" aria-expanded="false">Quest Maps</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="{{ url_for('questmaps.questmaps_all') }}">All Maps</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="{{ url_for('questmaps.questmap_create') }}">Create Quest Map</a></li>
+							</ul>
+						</li>							<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button" aria-expanded="false">Campaigns</a>
 							<ul class="dropdown-menu">
 								<li><a class="dropdown-item" href="{{ url_for('campaigns.campaigns_all') }}">All Campaigns</a></li>

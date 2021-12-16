@@ -1,5 +1,5 @@
 from HackShak import ma
-from HackShak.models import Quest, Campaign
+from HackShak.models import Quest, Campaign, QuestMap
 
 class QuestSchema(ma.SQLAlchemySchema):
     class Meta:
@@ -16,5 +16,13 @@ class CampaignSchema(ma.SQLAlchemySchema):
         load_instance = True  # Optional: deserialize to model instances
 
     id = ma.auto_field()
-    name = ma.auto_field()
+    title = ma.auto_field()
+
+class QuestMapSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = QuestMap
+        load_instance = True  # Optional: deserialize to model instances
+
+    id = ma.auto_field()
+    title = ma.auto_field()
 

@@ -10,15 +10,15 @@
 					<ul class="nav nav-pills">
 						{% if current_user.is_authenticated %}
 						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="{{ url_for('teachers.teacher_courses_current') }}" role="button" aria-expanded="false"><i class="bi bi-shield-shaded"> </i></a>
+							<a title="quests" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="{{ url_for('teachers.teacher_courses_current') }}" role="button" aria-expanded="false"><i class="bi bi-shield-shaded"> </i></a>
 							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="#">Available</a></li>
-								<li><a class="dropdown-item" href="#">In Progress</a></li>
-								<li><a class="dropdown-item" href="#">Completed</a></li>
-								<li><a class="dropdown-item" href="#">Past Courses</a></li>
+								<li><a class="dropdown-item" href="{{ url_for('students.student_quests_available') }}">Available</a></li>
+								<li><a class="dropdown-item" href="{{ url_for('students.student_quests_in_progress') }}">In Progress</a></li>
+								<li><a class="dropdown-item" href="{{ url_for('students.student_quests_completed') }}">Completed</a></li>
+								<li><a class="dropdown-item" href="{{ url_for('students.student_quests_past') }}">Past Courses</a></li>
 							</ul>
 						</li>						
-						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-patch-plus"></i></a></li>
+						<li class="nav-item"><a class="nav-item nav-link" title="Badges" href="{{ url_for('students.badges') }}"><i class="bi bi-patch-plus"></i></a></li>
 						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('quests.quests_maps') }}"><i class="bi bi-signpost-split"></i></a></li>
 					{% endif %}
 						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('announcements.announcements_all') }}"><i class="bi bi-newspaper"></i></a></li>

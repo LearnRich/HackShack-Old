@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+
+            <th class="col">Quest Map</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for questmap in questmaps %}
+        <tr  onClick="window.location.assign('{{ url_for('questmaps.questmap', questmap_id=questmap.id)}}')">
+            <td class="col">{{ questmap.title }}</td>
+        </tr>
+        {% endfor %}
+        <tbody>
+    </table>
+</div>
+
+{% endblock %}

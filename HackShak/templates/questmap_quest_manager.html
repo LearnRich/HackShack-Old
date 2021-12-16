@@ -1,0 +1,196 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link disabled" href="">{{ questmap.name }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('questmaps.questmap', questmap_id=questmap.id) }}">Quest Map Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page"  href="{{ url_for('questmaps.questmap_quests', questmap_id=questmap.id) }}">Quest Map Manager</a>
+    </li>
+  </ul>
+
+  <div class="row mt-2">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex flex-row">
+            <div class="d-flex flex-fill justify-content-start">{{ questmap.title }} Quests</div>
+            <div class="d-flex">
+              <a href="{{ url_for('questmaps.questmap_update', questmap_id=questmap.id) }}"><i class="bi bi-gear"></i></a>
+            </div>
+          </div>
+        
+
+        </div>
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="col col-1">ID</td>
+                <th class="col">Quest</th>
+                <th class="col col-1">XP</th>
+                <th class="col col-1"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quest in questmap.quests %}
+              {% if questmap.primary_quest %}
+                {% if quest == questmap.primary_quest %}
+                <tr class="primary">
+                {% else %}
+                <tr >
+                {% endif %}
+              {% endif %}
+
+                <td class="col col-1 setprimary" data-toggle="modal" data-id="{{ quest.id}}" style="cursor:pointer">{{ quest.id}}</a></td>
+                <td class="col setprimary" data-toggle="modal" data-id="{{ quest.id}}" style="cursor:pointer">{{ quest.title }}</td>
+                <td class="col col-1 setprimary" data-id="{{ quest.id}}" style="cursor:pointer">{{ quest.xp }}</td>
+                <td class="col"><a href="{{ url_for('questmaps.questmap_quest_remove', questmap_id=questmap.id, quest_id=quest.id) }}" class="btn btn-outline-danger btn-sm">Remove</a></td>
+            </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <input type="text" name="campaign_search_text" id="campaign_search_text" class="form-control" placeholder="Search quests by campaign name">
+      <input type="text" name="quest_search_text" id="quest_search_text" class="form-control" placeholder="Search quests by quest name">
+
+      <form method="POST" action="{{ url_for('questmaps.questmap_quest_add', questmap_id=questmap.id) }}">
+        <div id="result">
+          <table  id="results_table" class="table table-stripped">
+            <thead>
+              <tr>
+                <th class="col col-1"></th>
+                <th class="col col-1">ID</td>
+                <th class="col">Quest</th>
+                <th class="col col-1">XP</th>
+              </tr>
+            </thead>
+            <tbody id="results_table_body">
+            <tbody>
+          </table>
+        <input class="mt-1" type="submit" value="Add Quest(s)">
+      </form>
+    </div>
+  </div>
+
+
+
+</div>
+
+
+<div class="modal" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Comfirm: Primary Quest</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to set this quest as the primary quest for this quest map</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <form action="{{ url_for('questmaps.questmap_set_primary_quest', questmap_id=questmap.id) }}" id="set_primary_form" method="POST">
+          <input type="hidden" id="set_primary" name="set_primary" value="">
+          <input class="btn btn-primary" type="submit" value="Set Primary">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  $(document).ready(function() {
+
+    const load_quest_data = function(query) {
+      $.ajax({
+        url: "{{url_for('quests.quests_search', limit=10)}}",
+        method: "POST",
+        data: {query:query},
+        success: function(data) {
+          $('#results_table_body').empty();
+          $.each(data, function(i, item) {
+                    let tr=$('<tr></tr>');
+                    let td = $('<td class="col col-1"></td>')
+                      .appendTo(tr)
+                    let input = $('<input/>')
+                      .attr('type', 'checkbox')
+                      .attr('id', "quest"+item.id)
+                      .attr('name', item.id)
+                      .appendTo(td)
+                    tr.append($('<td class="col col-1"></td>').text(item.id));
+                    tr.append($('<td class="col"></td>').text(item.title));
+                    tr.append($('<td class="col col-1"></td>').text(item.xp));                          
+                    $('#results_table_body').append(tr);
+          });
+        }
+      });
+    }
+    const load_campaign_data = function(query) {
+      $.ajax({
+        url: "{{url_for('quests.quests_search_by_campaign', limit=20)}}",
+        method: "POST",
+        data: {query:query},
+        success: function(data) {
+          $('#results_table_body').empty();
+          $.each(data, function(i, item) {
+                    let tr=$('<tr></tr>');
+                    let td = $('<td class="col col-1"></td>')
+                      .appendTo(tr)
+                    let input = $('<input/>')
+                      .attr('type', 'checkbox')
+                      .attr('id', "quest"+item.id)
+                      .attr('name', item.id)
+                      .appendTo(td)
+                    tr.append($('<td class="col col-1"></td>').text(item.id));
+                    tr.append($('<td class="col"></td>').text(item.title));
+                    tr.append($('<td class="col col-1"></td>').text(item.xp));                          
+                    $('#results_table_body').append(tr);
+          });
+        }
+      });
+    }
+
+    $("#quest_search_text").keyup(function() {
+      var search = $(this).val();
+      if(search != '') {
+        load_quest_data(search);
+      }
+      else {
+        $('#results_table_body').html("")
+      }
+    });
+
+    $("#campaign_search_text").keyup(function() {
+      var search = $(this).val();
+      if(search != '') {
+        load_campaign_data(search);
+      }
+      else {
+        $('#results_table_body').html("")
+      }
+    });
+
+    $(".setprimary").click(function(){ // Click to only happen on announce links
+     $("#set_primary").attr('value', $(this).data('id'));
+     $('#confirmModal').modal('show');
+   });
+
+
+  });
+
+
+</script>
+
+
+{% endblock %}
