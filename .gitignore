@@ -134,3 +134,4 @@ dmypy.json
 # Config Files
 config.py
 pip_installs.txt
+db_migrate.txt
