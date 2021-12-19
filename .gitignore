@@ -135,3 +135,9 @@ dmypy.json
 config.py
 pip_installs.txt
 db_migrate.txt
+
+#Quest Upload Folder
+HackShak/HackShak/static/submissions/
+HackShak/static/submissions/
+HackShak/HackShak/static/submissions
+HackShak/static/submissions
