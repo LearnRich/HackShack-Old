@@ -96,7 +96,7 @@
 			</div>
 		</div>
 	</div>
-	<form method="POST" action="">
+	<form method="POST" enctype="multipart/form-data" action="">
 		{{ form.hidden_tag() }}
 		<fieldset class="form-group">
 			<div class="row mb-1">
@@ -118,13 +118,62 @@
 									</div>
 								{% else %}
 									{{ form.submission_text(class="", id="submission_text") }}
-								{% endif %}						
+								{% endif %}					
 							</p>
 							</div>	
 						<div class="card-body">
-							<p class="card-text">
-								Attach files
-							</p>
+							<div class="row">
+								<div class="col">
+									<div class="card">
+										<div class="card-header">
+											<h6>Attach Files</h6>
+										</div>
+										<div class="card-body">
+											{% if form.files.errors %}
+											{{ form.files(class="is-invalid", id="files", **{'data-url':'/'}) }}
+											<div class="invalid-feedback">
+												{% for error in form.files.errors %}
+													<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %}
+												{{ form.files(class="", id="files", **{'data-url':'/'}) }}
+											{% endif %}	
+											<p class="mt-1">Hold Ctrl to select multiple files, 20MB limit per file</p>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<div class="card">
+										<div class="card-header">
+											<h6>Attached Files</h6>											
+										</div>
+										<div class="card-body">
+											<ul class="list-group">
+												{% if submission.files|length > 0 %}
+													{% for file in submission.files %}
+													<li class="list-group-item d-flex justify-content-between align-items-start">
+														<div class="ms-2 me-auto">
+															<a href="{{ url_for('quests.submission_attachment', submission_id=submission.id, file_id=file.id)}}">{{ file.filename }}</a>
+														</div>
+														<div class="align-right">
+															<a class="btn btn-sm btn-danger" href="{{ url_for('quests.submission_attachment_remove', file_id=file.id, submission_id=submission.id) }}">Remove</a>
+														</div>
+													</li>
+													{% endfor %}
+												{% else %}
+												<li class="list-group-item d-flex justify-content-between align-items-start">
+													<div class="ms-2 me-auto">
+														<div>No files attached</div>
+													</div>
+												</li>
+												{% endif %}
+											</ul>	
+										</div>
+									</div>
+								</div>
+							</div>
+							
 						</div>	
 					</div>
 				</div>

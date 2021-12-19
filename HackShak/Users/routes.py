@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, flash, abort, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from HackShak import db, bcrypt, __STUDENT_ROLE, __TEACHER_ROLE, __ADMIN_ROLE
-from HackShak.models import Role, RoleAssignment, User, Student, Teacher, Announcement
+from HackShak.models import Role, RoleAssignment, User, Student, Course
 from HackShak.Users.forms import LoginForm, UpdateProfileForm, RegistrationForm
 from HackShak.Users.utils import roles_required, save_picture, splitme
 import re
@@ -11,22 +11,37 @@ users = Blueprint('users', __name__)
 
 @users.route('/register/student/', methods=['GET', 'POST'])
 def register_student_user():
-	if not current_user.is_authenticated:
-		return redirect(url_for('main.home'))
 	form = RegistrationForm()
 	if form.validate_on_submit():
-
+		print("Valid Form")
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		user = Student(username=form.username.data, firstname=form.firstname.data, lastname=form.lastname.data, email=form.email.data, password=hashed_password)
+		user = Student(username=form.username.data,
+			firstname=form.firstname.data,
+			lastname=form.lastname.data,
+			email=form.email.data,
+			grad_year=form.grad_year.data,
+			password=hashed_password)
 		db.session.add(user)
 		db.session.commit()
+		print(user)
+
+		course = Course.query.filter_by(invite=form.invite.data).first()
+		if course:
+			course.students.append(user)
+			db.session.commit()
+		else:
+			flash(f"An error occured and were unable to enroll in course. Please tell you teacher.", 'warning')
 
 		role = Role(__STUDENT_ROLE)
 		RoleAssignment.create(role.name, user.id)
 
-		flash(f'Account has been created. Please inform the user about login infomration', 'success')
+		flash(f'Account has been created. Please inform the user about login information', 'success')
 		return redirect(url_for('users.login'))
-	return render_template('register.html', title='User Registration', form=form)
+	else: 
+		for fieldName, errorMessages in form.errors.items():
+			for err in errorMessages:
+				print(f"{fieldName}:{err}")
+	return render_template('registration_student.html', title='Student Registration', form=form)
 
 @users.route('/login/', methods=['GET', 'POST'])
 def login():

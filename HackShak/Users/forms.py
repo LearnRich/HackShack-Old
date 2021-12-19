@@ -5,7 +5,7 @@ from wtforms.fields.core import RadioField, SelectField
 from wtforms.fields.html5 import DateField  # to be used with Date Pickers at a later time.
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Regexp
-from HackShak.models import User
+from HackShak.models import User, Course
 from flask_login import current_user
 from datetime import datetime
 import re
@@ -22,8 +22,8 @@ class RegistrationForm(FlaskForm):
 	email = StringField('Email', validators=[DataRequired(), Email()])
 	firstname = StringField('First Name', validators=[DataRequired()])
 	lastname = StringField('Last Name', validators=[DataRequired()])
-	
-	grad_year = SelectField('Grad Year')
+	invite = StringField('Invite Code', validators=[DataRequired()])
+	grad_year = SelectField('Grad Year', choices=list(range(datetime.today().year, datetime.today().year+6)), validate_choice=False)
 	password = PasswordField('Password', validators=[DataRequired()])
 	confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
 	submit = SubmitField('Create User')
@@ -37,6 +37,11 @@ class RegistrationForm(FlaskForm):
 		user = User.query.filter_by(email=email.data).first()
 		if user:
 			raise ValidationError('Email already exists')
+
+	def validate_invite(self, invite):
+		course = Course.query.filter_by(invite=invite.data).first()
+		if not course:
+			raise ValidationError('Invalid Invite Code')
 
 class UpdateProfileForm(FlaskForm):
 	picture = FileField('Avatar', validators=[FileAllowed(['jpg', 'png', 'jfif'])])

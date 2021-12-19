@@ -154,7 +154,7 @@ class Student(User):
 	grad_year = db.Column(db.Integer(), nullable=False)
 
 	# relationships
-	courses =  db.relationship("Course", secondary=course_enrollment)
+	courses =  db.relationship("Course", secondary=course_enrollment, back_populates="students")
 	submissions = db.relationship("QuestSubmission", back_populates="student")
 
 	def get_xp(self):
@@ -322,6 +322,13 @@ class SubmissionLog(db.Model):
 	submission = db.relationship("QuestSubmission", back_populates="submission_logs")
 	user = db.relationship("User")
 
+class QuestSubmissionFile(db.Model):
+	__tablename__ = "submission_file"
+	id = db.Column(db.Integer, primary_key=True)
+	submission_id = db.Column(db.Integer, db.ForeignKey('quest_submission.id'), nullable=False)
+	filename = db.Column(db.String(100))
+
+	submission = db.relationship("QuestSubmission", back_populates="files")
 
 class QuestSubmission(db.Model):
 	__tablename__ = 'quest_submission'
@@ -332,14 +339,12 @@ class QuestSubmission(db.Model):
 
 	status = db.Column(db.Enum(SubmissionStatus, values_callable=lambda x: [str(member.value) for member in SubmissionStatus]), default=SubmissionStatus.IN_PROGRESS)
 	started_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
+	xp_awarded = db.Column(db.Integer, default=0)
 	submission_text = db.Column(db.Text)
-	files = db.Column(db.Text)
 	#subbmitted_on = db.Column(db.DateTime)
 
-	xp_awarded = db.Column(db.Integer, default=0)
-
 	# future add the ability to add Proficincy Standards to Student Work
+	files = db.relationship("QuestSubmissionFile", cascade="all,delete")
 	quest = db.relationship("Quest")
 	student = db.relationship("Student", back_populates='submissions')
 	course = db.relationship("Course")
@@ -380,17 +385,19 @@ class Course(db.Model):
 	code = db.Column(db.String(100))
 	title = db.Column(db.String(100), nullable=False)
 	description = db.Column(db.Text)
-
+	invite = db.Column(db.String(50), unique=True)
 	primary_activity_id = db.Column(db.Integer, db.ForeignKey('quest_map.id'), nullable=True) 
 	grade = db.Column(db.String(2), nullable=False)
 	block = db.Column(db.String(1), nullable=False)
 	term = db.Column(db.String(10), nullable=False)
 	archived = db.Column(db.Boolean, default=False, nullable=False)
-	bc_curriculum = db.Column(db.String(100))
+	bc_curriculum = db.Column(db.String(50))
 
 	primary_activity = db.relationship("QuestMap")
 	teachers = db.relationship('Teacher', secondary=taught_by, back_populates='courses')
+	
 	students = db.relationship("Student", secondary=course_enrollment, back_populates="courses")
+	
 	activities = db.relationship("QuestMap", secondary=course_questmaps, backref="courses_in")
 
 
@@ -445,13 +452,15 @@ class CurricularCompetencies(db.Model):
 	title = db.Column(db.String(200), nullable=False)
 	description = db.Column(db.Text, nullable=False)
 
-'''
+
 class Term(db.Model):
 	__tablename__ = 'term'
 	id = db.Column(db.Integer, primary_key=True)
+	term = db.Column(db.String(50))
 	start_date = db.Column(db.DateTime, nullable=False)
 	end_date = db.Column(db.DateTime, nullable=False)
 
+'''
 Create a notification to be assigned to all users on creation of an announcement
 When 
 class Notification(db.Model):

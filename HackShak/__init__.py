@@ -6,10 +6,13 @@ from HackShak.config import HackShakConfig
 from HackShak.Main.utils import datetimeformat, datetimepassed, get_class
 from flask_marshmallow import Marshmallow
 
+from flask_migrate import Migrate
+
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 ma = Marshmallow()
+migrate = Migrate()
 
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
@@ -27,6 +30,7 @@ def create_app(config_class=HackShakConfig):
 	bcrypt.init_app(app)
 	login_manager.init_app(app)
 	ma.init_app(app)
+	migrate.init_app(app, db)
 
 	from HackShak.Users.routes import users
 	from HackShak.Students.routes import students
@@ -54,7 +58,6 @@ def create_app(config_class=HackShakConfig):
 	app.register_blueprint(campaigns)
 	app.register_blueprint(questmaps)
 	app.register_blueprint(courses)
-
 
 
 	app.jinja_env.filters['datetimeformat'] = datetimeformat

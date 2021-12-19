@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, TextAreaField, HiddenField
+from wtforms import StringField, SubmitField, IntegerField, TextAreaField, HiddenField, MultipleFileField
 from wtforms.fields.core import SelectField
 from wtforms.validators import DataRequired, Optional
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf.file import FileAllowed
 
 class QuestForm(FlaskForm):
 	title = StringField('Title', validators=[DataRequired()])
@@ -18,7 +18,7 @@ class QuestForm(FlaskForm):
 
 class SubmissionForm(FlaskForm):
 	submission_text = TextAreaField('Submission Text', validators=[Optional()])
-	files = FileField('File(s) Upload', validators=[Optional()])
+	files = MultipleFileField('File(s) Upload', validators=[Optional()])
 	save = SubmitField('Save')
 	submit = SubmitField('Submit Quest for Completion')
 

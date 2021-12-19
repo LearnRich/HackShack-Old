@@ -10,6 +10,8 @@ main = Blueprint('main', __name__)
 @main.route('/home/')
 @login_required
 def home():
+	if current_user.has_role('student'):
+		return redirect(url_for('students.student_quests_available'))
 	page = request.args.get('page', 1, type=int)
 	announcements = Announcement.query.order_by(Announcement.date_posted.desc()).paginate(page=page, per_page=2)
 	for post in announcements.items:

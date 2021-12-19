@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-section">
+  <ul class="nav nav-tabs flex-md-row flex-column">
+    <li class="nav-item">
+      <a class="nav-link disabled" href="">{{ course.title }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('courses.course_details', course_id=course.id) }}">Course Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('courses.course_activities', course_id=course.id) }}">Activity Management</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="{{ url_for('courses.course_studentlist', course_id=course.id) }}">Student List</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('courses.course_quest_submissions', course_id=course.id) }}">Review Submitted Quests</a>
+    </li>
+  </ul>
+
+  
+</div>
+
+{% endblock %}

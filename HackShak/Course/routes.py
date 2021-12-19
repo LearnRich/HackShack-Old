@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, request, url_for, redirect, flash, abort
+from werkzeug.utils import validate_arguments
 from HackShak import __ADMIN_ROLE, __TEACHER_ROLE
 from flask_login import current_user, login_required
 from HackShak import db
 from HackShak.Users.utils import roles_required
 from HackShak.models import Course, Teacher, QuestSubmission, SubmissionStatus, QuestMap
 from HackShak.Course.forms import CourseForm
+from random import choice
+from string import ascii_letters, digits
 
 courses = Blueprint('courses', __name__)
 
@@ -61,7 +64,7 @@ def course_update(course_id):
 		flash(f'Course [{course.title}] has been update', 'success')
 		return redirect(url_for('teachers.teacher_courses_current'))
 	elif request.method == 'GET':
-		form.course_code.data = course.course_code
+		form.course_code.data = course.code
 		form.title.data = course.title
 		form.description.data = course.description
 		form.block.data = course.block
@@ -141,3 +144,21 @@ def course_set_primary_activity(course_id):
     db.session.commit()
     flash(f"Activity '{activity.title}' has been set at the primary activity for course", 'success')
     return redirect(url_for('courses.course_activities', course_id=course.id))
+
+@courses.route('/course/<int:course_id>/generate/invite')
+@login_required
+@roles_required([__TEACHER_ROLE])
+def course_generate_invite(course_id):
+	course = Course.query.get_or_404(course_id)
+	
+	valid_invite = False
+
+	while not valid_invite:
+		invite = ''.join(choice(ascii_letters + digits) for _ in range(8))
+		if not Course.query.filter_by(invite=invite).first():
+			valid_invite = True
+
+	course.invite = invite
+	db.session.commit()
+
+	return redirect(url_for('courses.course_details', course_id=course.id))

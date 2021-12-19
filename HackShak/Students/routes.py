@@ -35,7 +35,8 @@ def student_quests_in_progress():
 def student_quests_completed():
     student = Student.query.get_or_404(current_user.id)
     current_course = student.get_current_enrolled_course()
-    submissions = QuestSubmission.query.filter_by(student_id=student.id, course_id=current_course.id, status=SubmissionStatus.SUBMITTED).all()
+    submissions = QuestSubmission.query.filter(QuestSubmission.student_id==student.id,
+										QuestSubmission.status.in_((SubmissionStatus.SUBMITTED, SubmissionStatus.COMPLETED))).all()
     return render_template('student_quests_submitted.html', student=student, submissions=submissions )
 
 @students.route('/student/quests/past/')

@@ -1,14 +1,16 @@
-from flask import Blueprint, render_template, request, url_for, redirect, flash, abort, jsonify
+from flask import Blueprint, render_template, request, url_for, redirect, flash, abort, jsonify, current_app, send_from_directory
 from HackShak import db, __ADMIN_ROLE, __TEACHER_ROLE, __STUDENT_ROLE
 from flask_login import current_user, login_required
 from HackShak.Users.utils import roles_required
 from HackShak.Quests.forms import QuestForm, SubmissionForm, SubmissionReviewForm
 from HackShak.Quests.utils import get_allowed_tags
-from HackShak.models import Quest, QuestSubmission, SubmissionStatus, Student, SubmissionLog, SubmissionLogCategory, Campaign
+from HackShak.models import Quest, QuestSubmission, SubmissionStatus, Student, SubmissionLog, SubmissionLogCategory, Campaign, QuestSubmissionFile
 from HackShak.schemas import QuestSchema
 from bleach import clean, sanitizer
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_
+from werkzeug.utils import secure_filename
+import os
 import json
 
 
@@ -212,7 +214,19 @@ def quest_submission(submission_id):
 	form = SubmissionForm()
 	if form.validate_on_submit():
 		submission.submission_text = form.submission_text.data
+		print(form.files.data)
+		for file in form.files.data:
+			if file:
+				s_filename = secure_filename(file.filename)
+				dir_path = os.path.join(current_app.root_path, 'static\submissions', current_user.username, str(submission.id))
+				if not os.path.exists(dir_path):
+					os.makedirs(dir_path)
+				file_path = os.path.join(dir_path, s_filename)
+				file.save(file_path)
+				submitted_file = QuestSubmissionFile(filename=s_filename, submission_id=submission.id)
+				submission.files.append(submitted_file)
 		if form.save.data:
+			submission.status = SubmissionStatus.IN_PROGRESS
 			db.session.commit()
 			flash('Your submission has been saved!', 'success')
 			return redirect(url_for('quests.quest_submission', submission_id=submission.id))
@@ -228,6 +242,43 @@ def quest_submission(submission_id):
 	elif request.method == 'GET':
 		form.submission_text.data = submission.submission_text
 	return render_template('quest_submission.html', submission=submission, form=form, legend='Quest Submission')
+
+@quests.route("/quest/submission/<int:submission_id>/attachment/<int:file_id>")
+@login_required
+def submission_attachment(submission_id, file_id):
+	submission = QuestSubmission.query.get_or_404(submission_id)
+	file = QuestSubmissionFile.query.get_or_404(file_id)
+	if current_user.has_role(__STUDENT_ROLE):
+		if submission.student_id != current_user.id :
+			abort(403)
+	
+	dir_path = os.path.join(current_app.root_path, 'static\submissions', current_user.username, str(submission.id))
+	try:
+		return send_from_directory(dir_path, file.filename, as_attachment=True, attachment_filename=file.filename)
+	except:
+		abort(404)
+
+
+@quests.route('/quest/submission/<int:submission_id>/attachment/<int:file_id>/remove')
+@login_required
+@roles_required([__STUDENT_ROLE])
+def submission_attachment_remove(submission_id, file_id):
+	# get existing student work 
+	submission = QuestSubmission.query.get_or_404(submission_id)
+	file = QuestSubmissionFile.query.get_or_404(file_id)
+	if submission.student_id != current_user.id:
+		abort(403)
+	
+	file_path = os.path.join(current_app.root_path, 'static\submissions', current_user.username, str(submission.id), file.filename)
+	if os.path.exists(file_path):
+		flash(f"{file.filename} was removed from submission", 'success')
+		os.remove(file_path)
+		submission.files.remove(file)
+		db.session.delete(file)
+		db.session.commit()
+	else:
+		flash(f"Unable to remove, could not find file {file.filename}", 'warning')
+	return redirect(url_for('quests.quest_submission', submission_id=submission_id))
 
 @quests.route('/quest/submission/<int:submission_id>/drop')
 @login_required
