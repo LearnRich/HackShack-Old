@@ -1,18 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, flash, abort, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from HackShak import db, bcrypt, __STUDENT_ROLE, __TEACHER_ROLE, __ADMIN_ROLE
-from HackShak.models import Role, RoleAssignment, User, Teacher, Announcement, Student
-from HackShak.Auth.forms import LoginForm, UpdateProfileForm, RegistrationForm
-from HackShak.Auth.utils import roles_required, save_picture, splitme
+
+from .. import db, bcrypt, __STUDENT_ROLE, __TEACHER_ROLE, __ADMIN_ROLE
+from ..models import Role, RoleAssignment, User, Teacher, Announcement, Student
+from ..Auth.forms import LoginForm, UpdateProfileForm, RegistrationForm
+from ..Auth.utils import roles_required, save_picture, splitme
 
 teachers_bp = Blueprint(
 	'teachers_bp', 
 	__name__,
 	url_prefix='/teacher/'
 )
-
-
-
 
 
 @teachers_bp.route('/teacher/courses/current')

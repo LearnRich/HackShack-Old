@@ -1,5 +1,5 @@
-from HackShak import ma
-from HackShak.models import Quest, Campaign, QuestMap
+from . import ma
+from .models import Quest, Campaign, QuestMap
 
 class QuestSchema(ma.SQLAlchemySchema):
     class Meta:

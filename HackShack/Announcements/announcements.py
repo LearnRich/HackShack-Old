@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, url_for, flash, redirect, abort
 from flask_login import current_user, login_required
-from HackShak import db, __TEACHER_ROLE, __ADMIN_ROLE
-from HackShak.models import Announcement, Teacher
-from HackShak.Announcements.forms import AnnouncementForm
-from HackShak.Auth.utils import roles_required
+from .. import db, __TEACHER_ROLE, __ADMIN_ROLE
+from ..models import Announcement, Teacher
+from ..Announcements.forms import AnnouncementForm
+from ..Auth.utils import roles_required
 
 
 announcements_bp = Blueprint(

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, url_for
 from werkzeug.utils import redirect
-from HackShak.models import Announcement, Rank
+from ..models import Announcement, Rank
 from flask_login import current_user, login_required
-from HackShak.Auth.utils import roles_required
+from ..Auth.utils import roles_required
 
 main_bp = Blueprint('main_bp', __name__, template_folder='templates')
 
