@@ -3,8 +3,8 @@ from werkzeug.utils import validate_arguments
 from HackShak import __ADMIN_ROLE, __TEACHER_ROLE
 from flask_login import current_user, login_required
 from HackShak import db
-from HackShak.Users.utils import roles_required
-from HackShak.models import Course, Teacher, QuestSubmission, SubmissionStatus, QuestMap
+from HackShak.Auth.utils import roles_required
+from HackShak.models import Course, Teacher, QuestSubmission, SubmissionStatus, QuestMap, Student
 from HackShak.Course.forms import CourseForm
 from random import choice
 from string import ascii_letters, digits
@@ -162,3 +162,12 @@ def course_generate_invite(course_id):
 	db.session.commit()
 
 	return redirect(url_for('courses.course_details', course_id=course.id))
+
+@courses.route('/course/<int:course_id>/student/<int:student_id>/activities')
+@login_required
+@roles_required([__TEACHER_ROLE])
+def course_student_activities(course_id, student_id):
+	student = Student.query.get_or_404(student_id)
+	avatar_file = url_for('static', filename='profile_pics/' + student.avatar_file)
+	course_activities = QuestSubmission.query.filter_by(student_id=student_id, course_id=course_id).all()
+	return render_template('course_student_activities.html', student=student, course_activities=course_activities, avatar_file=avatar_file)

@@ -20,7 +20,7 @@
     </li>
   </ul>
 
-  <table class="table table-striped">
+  <table class="table table-striped table-hover">
     <thead>
       <tr>
         <th scope="col">Avatar</td>
@@ -37,7 +37,7 @@
     <tbody>
       {% for student in course.students %}
 
-      <tr>
+      <tr onClick="window.location.assign('{{ url_for('courses.course_student_activities', course_id=course.id, student_id=student.id)}}')">
         <td></td>
         <td></td>
         <td>{{ student.firstname }}</td>

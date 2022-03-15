@@ -3,18 +3,23 @@ from flask_login import current_user, login_required
 from HackShak import db, __TEACHER_ROLE, __ADMIN_ROLE
 from HackShak.models import Announcement, Teacher
 from HackShak.Announcements.forms import AnnouncementForm
-from HackShak.Users.utils import roles_required
+from HackShak.Auth.utils import roles_required
 
 
-announcements = Blueprint('announcements', __name__)
+announcements_bp = Blueprint(
+	'announcements_bp', 
+	__name__,
+	url_prefix='/announcement/',
+	template_folder='templates'
+)
 
-@announcements.route('/announcements/')
+@announcements_bp.route('/all/')
 def announcements_all():
 	page = request.args.get('page', 1, type=int)
 	announcement_posts = Announcement.query.paginate(page=page, per_page=10)
 	return render_template('announcements.html', announcements=announcement_posts)
 
-@announcements.route('/announcement/create/', methods=['GET', 'POST'])
+@announcements_bp.route('/create/', methods=['GET', 'POST'])
 @login_required
 @roles_required([__ADMIN_ROLE, __TEACHER_ROLE])
 def announcement_create():
@@ -28,12 +33,12 @@ def announcement_create():
 		return redirect(url_for('main.home'))
 	return render_template('create_announcement.html', form=form, title='New Announcement', legend='New Announcement')
 
-@announcements.route('/announcement/<int:announcement_id>/')
+@announcements_bp.route('/<int:announcement_id>/')
 def announcement(announcement_id):
 	announcement = Announcement.query.get_or_404(announcement_id)
 	return render_template('announcement.html', title=announcement.title, announcement=announcement)
 
-@announcements.route('/announcement/<int:announcement_id>/update/', methods=['GET','POST'])
+@announcements_bp.route('/<int:announcement_id>/update/', methods=['GET','POST'])
 @login_required
 def announcement_update(announcement_id):
 	announcement = Announcement.query.get_or_404(announcement_id)
@@ -52,7 +57,7 @@ def announcement_update(announcement_id):
 
 	return render_template('create_announcement.html', title='Update Announcement', post=announcement, form=form, legend='Update Announcement')
 
-@announcements.route('/announcement/<int:announcement_id>/delete/', methods=['POST'])
+@announcements_bp.route('/<int:announcement_id>/delete/', methods=['POST'])
 @login_required
 def announcement_delete(announcement_id):
 	announcement = Announcement.query.get_or_404(announcement_id)

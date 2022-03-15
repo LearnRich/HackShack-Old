@@ -1,7 +1,7 @@
 <header class="site-header">
 	<nav class="navbar navbar-expand-md navbar-dark bg-teal fixed-top">
 		<div class="container">
-			<a class="navbar-brand mr-4" href="{{ url_for('main.home') }}">HS</a>
+			<a class="navbar-brand mr-4" href="{{ url_for('main_bp.home') }}">HS</a>
 			
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -45,9 +45,9 @@
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button" aria-expanded="false">Announcements</a>
 							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="{{ url_for('announcements.announcements_all') }}">All Announcements</a></li>
+								<li><a class="dropdown-item" href="{{ url_for('announcements_bp.announcements_all') }}">All Announcements</a></li>
 								<li><hr class="dropdown-divider"></li>
-								<li><a class="dropdown-item" href="{{ url_for('announcements.announcement_create') }}">Create Announcement</a></li>
+								<li><a class="dropdown-item" href="{{ url_for('announcements_bp.announcement_create') }}">Create Announcement</a></li>
 							</ul>
 						</li>		
 					</ul>
@@ -58,7 +58,7 @@
 					{% if current_user.is_authenticated %}
 					<a class="nav-item nav-link" href="{{ url_for('teachers.teacher_profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a>
 
-					<a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+					<a class="nav-item nav-link" href="{{ url_for('auth_bp.logout') }}">Logout</a>
 					{% else %}
 						<a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
 					{% endif %}

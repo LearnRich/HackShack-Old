@@ -1,6 +1,7 @@
-from HackShak import create_app, db, bcrypt, __STUDENT_ROLE, __ADMIN_ROLE, __TEACHER_ROLE
+from ..HackShak import create_app, db, bcrypt, __STUDENT_ROLE, __ADMIN_ROLE, __TEACHER_ROLE
 
-from HackShak.models import User, Student, Teacher, Admin, Role, RoleAssignment, Course, Campaign, Rank, Quest, QuestSubmission, SubmissionStatus, Activity
+from ..HackShak.models import User, Student, Teacher, Admin, Role, RoleAssignment, Course, Campaign, Rank, Quest, QuestSubmission, SubmissionStatus, Activity
+
 app = create_app()
 app.app_context().push()
 

@@ -211,8 +211,19 @@
 	$(document).ready(function() {
 		$('#submission_text').summernote({
 			height: 300,
-
+			toolbar: [
+				// [groupName, [list of button]]
+				['style', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'add-text-tags', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
+			
 		});
 	});
 </script>
 {% endblock %}
+
+

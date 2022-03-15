@@ -1,30 +1,39 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from HackShak.config import HackShakConfig
-from HackShak.Main.utils import datetimeformat, datetimepassed, get_class
+from flask_assets import Environment
 from flask_marshmallow import Marshmallow
+from flask_mail import Mail
 
 from flask_migrate import Migrate
+
+from os import environ
+
+from .filters import datetimeformat, datetimepassed, get_class
 
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 ma = Marshmallow()
+assets = Environment()
 migrate = Migrate()
+mail = Mail()
 
 login_manager = LoginManager()
-login_manager.login_view = 'users.login'
+login_manager.login_view = 'auth_bp.login'
 login_manager.login_message_category = 'info'
 
-__ADMIN_ROLE = 'admin'
-__TEACHER_ROLE = 'teacher'
-__STUDENT_ROLE = 'student'
+__ADMIN_ROLE = environ.get('ADMIN_ROLE_NAME')
+__TEACHER_ROLE = environ.get('ADMIN_ROLE_NAME')
+__STUDENT_ROLE = environ.get('ADMIN_ROLE_NAME')
 
-def create_app(config_class=HackShakConfig):
+def create_app():
 	app = Flask(__name__)
-	app.config.from_object(HackShakConfig)
+	app.config.from_object('config.'+environ.get('FLASK_ENV').capitalize())
 
 	db.init_app(app)
 	bcrypt.init_app(app)
@@ -32,32 +41,39 @@ def create_app(config_class=HackShakConfig):
 	ma.init_app(app)
 	migrate.init_app(app, db)
 
-	from HackShak.Users.routes import users
-	from HackShak.Students.routes import students
-	from HackShak.Teachers.routes import teachers
-	from HackShak.Announcements.routes import announcements
-	from HackShak.Main.routes import main
-	from HackShak.Activity.routes import activities
-	from HackShak.Quests.routes import quests
-	from HackShak.Campaign.routes import campaigns
-	from HackShak.QuestMaps.routes import questmaps
-	from HackShak.Course.routes import courses
-	from HackShak.errors.handlers import errors
+	from .errors.handlers import errors
 
-	app.register_blueprint(main)
+	from .Auth.auth import auth_bp
+	from .Registration.registration import reg_bp
+	from .Main.main import main_bp
+	from .Profile.profile import profile_bp
+
+	#from .Students.students import students
+	#from .Teachers.routes import teachers
+	from .Announcements.announcements import announcements_bp
+	
+	#from .Activity.activity import activities
+	#from .Quests.quests import quests
+	#from .Campaign.campaign import campaigns
+	#from .QuestMaps.questmaps import questmaps
+	#from .Course.course import courses
+
 	app.register_blueprint(errors)
 
-	app.register_blueprint(users)
-	app.register_blueprint(students)
-	app.register_blueprint(teachers)
+	app.register_blueprint(main_bp)
+	app.register_blueprint(auth_bp)
+	app.register_blueprint(reg_bp)
+	app.register_blueprint(profile_bp)
+	#app.register_blueprint(students)
+	#app.register_blueprint(teachers)
 
-	app.register_blueprint(announcements)
+	app.register_blueprint(announcements_bp)
 
-	app.register_blueprint(activities)
-	app.register_blueprint(quests)
-	app.register_blueprint(campaigns)
-	app.register_blueprint(questmaps)
-	app.register_blueprint(courses)
+	#app.register_blueprint(activities)
+	#app.register_blueprint(quests)
+	#app.register_blueprint(campaigns)
+	#app.register_blueprint(questmaps)
+	#app.register_blueprint(courses)
 
 
 	app.jinja_env.filters['datetimeformat'] = datetimeformat

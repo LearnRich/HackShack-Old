@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from HackShak import db,__STUDENT_ROLE
 
 from HackShak.models import QuestSubmission, Student, SubmissionStatus, Quest
-from HackShak.Users.utils import roles_required, save_picture, splitme
+from HackShak.Auth.utils import roles_required, save_picture, splitme
 
 students = Blueprint('students', __name__)
 

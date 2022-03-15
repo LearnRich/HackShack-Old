@@ -55,12 +55,6 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
 # Flask stuff:
 instance/
 .webassets-cache
@@ -112,6 +106,9 @@ venv.bak/
 hackshak_venv/
 hackshack_venv.bak/
 .hackshack_venv
+hs_venv/
+hs_venv
+
 
 # Spyder project settings
 .spyderproject
@@ -131,10 +128,16 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Config Files
-config.py
-pip_installs.txt
-db_migrate.txt
+
+#Migrations 
+*/migrations/
+migrations/
+migrations
+
+#Python Cache
+*/__pycache__/
+__pycache__/
+__pycache__
 
 #Quest Upload Folder
 HackShak/HackShak/static/submissions/

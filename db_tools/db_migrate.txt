@@ -1,0 +1,6 @@
+set FLASK_APP=HackShak:create_app()
+flask db init
+
+flask db migrate
+
+flask fb upgrade

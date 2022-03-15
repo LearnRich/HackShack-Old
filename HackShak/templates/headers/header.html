@@ -1,7 +1,7 @@
 <header class="site-header">
 	<nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
 		<div class="container">
-			<a class="navbar-brand mr-4" href="{{ url_for('main.home') }}">HS</a>
+			<a class="navbar-brand mr-4" href="{{ url_for('main_bp.home') }}">HS</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 			</button>
@@ -21,7 +21,7 @@
 						<li class="nav-item"><a class="nav-item nav-link" title="Badges" href="{{ url_for('students.badges') }}"><i class="bi bi-patch-plus"></i></a></li>
 						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('quests.quests_maps') }}"><i class="bi bi-signpost-split"></i></a></li>
 					{% endif %}
-						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('announcements.announcements_all') }}"><i class="bi bi-newspaper"></i></a></li>
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('announcements_bp.announcements_all') }}"><i class="bi bi-newspaper"></i></a></li>
 					</ul>
 				</div>
 				<!-- Navbar Right Side -->
@@ -30,11 +30,11 @@
 						{% if current_user.is_authenticated %}
 
 						{% if current_user.has_role('student') %}
-						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.profile') }}">XP: {{ current_user.get_role_obj().get_xp() }} </a></li>
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('profile_bp.profile') }}">XP: {{ current_user.get_role_obj().get_xp() }} </a></li>
 						{% endif %}
-						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a></li>
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('profile_bp.profile') }}"><i class="bi bi-person-circle"></i>&nbsp;{{ current_user.username}}</a></li>
 						{% if current_user.has_role('student') %}
-						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('main.ranks') }}">{{ current_user.get_role_obj().get_current_rank().symbol_html|safe }}</i></a></li>
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('main_bp.ranks') }}">{{ current_user.get_role_obj().get_current_rank().symbol_html|safe }}</i></a></li>
 						{% endif %}
 
 						<li class="nav-item dropdown">
@@ -49,9 +49,9 @@
 							</ul>
 						</li>
 
-						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a></li>
+						<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('auth_bp.logout') }}">Logout</a></li>
 						{% else %}
-							<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a></li>
+							<li class="nav-item"><a class="nav-item nav-link" href="{{ url_for('auth_bp.login') }}">Login</a></li>
 						{% endif %}
 					</ul>
 				</div>

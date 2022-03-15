@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, url_for, redirect, flash, abort, jsonify, current_app, send_from_directory
 from HackShak import db, __ADMIN_ROLE, __TEACHER_ROLE, __STUDENT_ROLE
 from flask_login import current_user, login_required
-from HackShak.Users.utils import roles_required
+from HackShak.Auth.utils import roles_required
 from HackShak.Quests.forms import QuestForm, SubmissionForm, SubmissionReviewForm
 from HackShak.Quests.utils import get_allowed_tags
 from HackShak.models import Quest, QuestSubmission, SubmissionStatus, Student, SubmissionLog, SubmissionLogCategory, Campaign, QuestSubmissionFile

@@ -29,21 +29,3 @@ def roles_required(roles: list, require_all=False):
     return _roles_required
 
 
-def save_picture(form_picture):
-	random_hex = secrets.token_hex(8)
-	_, f_ext = os.path.splitext(form_picture.filename)
-	picture_fn = random_hex + f_ext
-	picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
-
-	output_size = (125, 125)
-	i = Image.open(form_picture)
-	i.thumbnail(output_size)
-	i.save(picture_path)
-
-	return picture_fn
-
-def splitme(s, c):
-    if (s[0] == c):
-        return s[1:]
-    else: 
-        return(s)

@@ -245,7 +245,8 @@ class Student(User):
 					available_list.append(available_quest)
 		return available_list 
 
-
+	def display_name(self):
+		return f"{self.firstname} {self.lastname}"
 
 	def __repr__(self):
 		return f"Student('{self.username}', '{self.email}', '{self.avatar_file}')"	

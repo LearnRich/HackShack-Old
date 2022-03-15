@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, url_for, redirect, flash,
 from HackShak import __ADMIN_ROLE, __TEACHER_ROLE, __STUDENT_ROLE
 from flask_login import current_user, login_required
 from HackShak import db
-from HackShak.Users.utils import roles_required
+from HackShak.Auth.utils import roles_required
 from HackShak.models import Campaign, Quest
 from HackShak.schemas import CampaignSchema
 from HackShak.Campaign.forms import CampaignForm

@@ -3,7 +3,7 @@
 
 {% for announcement in announcements.items %}
 		<article class="media content-section">
-				<h2><a class="article-title" href="{{ url_for('announcements.announcement', announcement_id=announcement.id)}}">{{ announcement.title }}</a></h2>
+				<h2><a class="article-title" href="{{ url_for('announcements_bp.announcement', announcement_id=announcement.id)}}">{{ announcement.title }}</a></h2>
 				<p class="article-content">{{ announcement.content }}</p>
 			</div>
 		</article>
@@ -11,9 +11,9 @@
 	{% for page_num in announcements.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
 		{% if page_num %}
 			{% if announcements.page == page_num %}
-				<a class="btn btn-info md-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+				<a class="btn btn-info md-4" href="{{ url_for('main_bp.home', page=page_num) }}">{{ page_num }}</a>
 			{% else %}
-				<a class="btn btn-outline-info md-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+				<a class="btn btn-outline-info md-4" href="{{ url_for('main_bp.home', page=page_num) }}">{{ page_num }}</a>
 			{% endif %}
 		{% else %}
 			...
